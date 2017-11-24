@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  	<parent>
+		<groupId>org.vebqa.vebtal</groupId>
+		<artifactId>vebtal-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+  <artifactId>vebtal-selenium</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<!-- interne Projektreferenzen -->
+		<dependency>
+			<groupId>org.vebqa.vebtal</groupId>
+			<artifactId>vebtal-manager</artifactId>
+			<version>0.0.1-Snapshot</version>
+		</dependency>
+
+		<!-- selenese-extensions -->
+		<dependency>
+			<groupId>com.veb.selenese</groupId>
+			<artifactId>selenese-extensions</artifactId>
+			<version>3.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-io</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-http</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${version.jaxrs}</version>
+		</dependency>
+	</dependencies>  
+</project>
