@@ -3,6 +3,7 @@ package org.vebqa.vebtal.seleneserestserver;
 import java.util.Set;
 
 import org.vebqa.vebtal.AbstractTestAdaptionPlugin;
+import org.vebqa.vebtal.TestAdaptionType;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.CommandResult;
 import org.vebqa.vebtal.seleneserestserver.util.DriverManager;
@@ -25,6 +26,10 @@ import javafx.scene.layout.HBox;
 @SuppressWarnings("restriction")
 public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
+	public SeleneseTestAdaptionPlugin() {
+		super(TestAdaptionType.ADAPTER);
+	}
+	
 	/** Start/Stop Button **/
 	private static final Button btnStartStop = new Button();
 

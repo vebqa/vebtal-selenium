@@ -34,7 +34,7 @@ public class DriverManager {
 		}
 		for (String aFileName : directoryContents) {
 			File temp = new File(String.valueOf(dir),aFileName);
-			logger.info("Found driver: " + temp.getAbsolutePath());
+			logger.info("Found driver: {} ", temp.getAbsolutePath());
 			if (temp.getName().startsWith("chromedriver")) {
 				drivers.put("Chrome", String.valueOf(temp.getAbsolutePath()));
 				System.setProperty("webdriver.chrome.driver", temp.getAbsolutePath());

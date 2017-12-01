@@ -1,13 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  	<parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
 		<groupId>org.vebqa.vebtal</groupId>
 		<artifactId>vebtal-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-  <artifactId>vebtal-selenium</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
+	<artifactId>vebtal-selenium</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -20,35 +21,50 @@
 			<version>0.0.1-Snapshot</version>
 		</dependency>
 
-		<!-- selenese-extensions -->
 		<dependency>
-			<groupId>com.veb.selenese</groupId>
-			<artifactId>selenese-extensions</artifactId>
-			<version>3.0.1-SNAPSHOT</version>
+			<groupId>jp.vmi</groupId>
+			<artifactId>selenese-runner-java</artifactId>
+			<version>3.8.0</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-util</artifactId>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-io</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-client</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.eclipse.jetty</groupId>
-					<artifactId>jetty-http</artifactId>
+					<groupId>com.codeborne</groupId>
+					<artifactId>phantomjsdriver</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<dependency>
+			<groupId>com.galenframework</groupId>
+			<artifactId>galen-java-support</artifactId>
+			<version>2.3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${version.slf4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>${version.jaxrs}</version>
 		</dependency>
-	</dependencies>  
+	</dependencies>
 </project>

@@ -46,11 +46,11 @@ public class SeleneseResource {
         
 			manager = WebDriverManager.newInstance();
 			
-			if (SeleneseTestAdaptionPlugin.getSelectedDriver().equalsIgnoreCase("chrome")) {
+			if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.CHROME);	
-			} else if (SeleneseTestAdaptionPlugin.getSelectedDriver().equalsIgnoreCase("firefox")) {
+			} else if ("firefox".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.FIREFOX);
-			} else if (SeleneseTestAdaptionPlugin.getSelectedDriver().equalsIgnoreCase("iexplorer")) {
+			} else if ("iexplorer".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.IE);
 			}
 			
@@ -65,7 +65,7 @@ public class SeleneseResource {
 		seleneseContext.setWebDriverPreparator(manager);
 		
 		// TODO: refactor to dynamic loading
-        String factoryName = "com.veb.selenium.selenese.command.VEBSeleneseExtensions";
+        String factoryName = "org.vebqa.vebtal.selenese.command.AdditionalSeleneseExtensions";
         ICommandFactory factory;
         try {
             Class<?> factoryClass = Class.forName(factoryName);
@@ -76,7 +76,18 @@ public class SeleneseResource {
         }
         seleneseContext.getCommandFactory().registerCommandFactory(factory);
         logger.info("Registered command factory: " + factory);
-		
+
+        factoryName = "org.vebqa.vebtal.selenese.command.GalenSeleneseExtensions";
+        try {
+            Class<?> factoryClass = Class.forName(factoryName);
+            factory = (ICommandFactory) factoryClass.newInstance();
+        } catch (Exception e) {
+            logger.error("Error loading user defined command factory: " + factoryName, e);
+            throw new IllegalArgumentException("invalid user defined command factory: " + factoryName);
+        }
+        seleneseContext.getCommandFactory().registerCommandFactory(factory);
+        logger.info("Registered command factory: {}", factory);        
+        
 		TestCase tCase = new TestCase();
 		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand() , cmd.getTarget(), cmd.getValue());
 		seleneseContext.setCurrentTestCase(tCase);
