@@ -3,6 +3,7 @@ package org.vebqa.vebtal.seleneserestserver;
 import java.io.PrintStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jp.vmi.selenium.rollup.RollupRules;
+import jp.vmi.selenium.selenese.AlertActionListener;
 import jp.vmi.selenium.selenese.CollectionMap;
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.Eval;
@@ -21,6 +23,7 @@ import jp.vmi.selenium.selenese.command.CommandListIterator;
 import jp.vmi.selenium.selenese.javascript.JSLibrary;
 import jp.vmi.selenium.selenese.locator.WebDriverElementFinder;
 import jp.vmi.selenium.selenese.log.CookieFilter;
+import jp.vmi.selenium.selenese.log.LogFilter;
 import jp.vmi.selenium.selenese.log.PageInformation;
 import jp.vmi.selenium.selenese.subcommand.SubCommandMap;
 import jp.vmi.selenium.webdriver.WebDriverPreparator;
@@ -220,4 +223,20 @@ public class SeleneseContext implements Context {
     public void setWebDriverPreparator(WebDriverPreparator preparator) {
         this.preparator = preparator;
     }
+
+    /**
+     * Return empty set of log filter.
+     * 
+     * @return
+     */
+	@Override
+	public EnumSet<LogFilter> getLogFilter() {
+		return EnumSet.noneOf(LogFilter.class);
+	}
+
+	@Override
+	public AlertActionListener getNextNativeAlertActionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
