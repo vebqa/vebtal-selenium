@@ -71,8 +71,8 @@ public class SeleneseResource {
             Class<?> factoryClass = Class.forName(factoryName);
             factory = (ICommandFactory) factoryClass.newInstance();
         } catch (Exception e) {
-            logger.error("Error loading user defined command factory: " + factoryName, e);
-            throw new IllegalArgumentException("invalid user defined command factory: " + factoryName);
+            logger.error("Error loading user defined command factory: {}", factoryName, e);
+            throw new IllegalArgumentException("invalid user defined command factory: " + factoryName, e);
         }
         seleneseContext.getCommandFactory().registerCommandFactory(factory);
         logger.info("Registered command factory: " + factory);
