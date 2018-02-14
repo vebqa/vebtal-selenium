@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>jp.vmi</groupId>
 			<artifactId>selenese-runner-java</artifactId>
-			<version>3.11.0</version>
+			<version>3.12.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
