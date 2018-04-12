@@ -14,9 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galenframework.api.Galen;
+import com.galenframework.browser.SeleniumBrowser;
+import com.galenframework.parser.IndentationStructureParser;
+import com.galenframework.parser.StructNode;
 import com.galenframework.reports.TestReport;
 import com.galenframework.reports.model.LayoutReport;
+import com.galenframework.speclang2.pagespec.MacroProcessor;
+import com.galenframework.speclang2.pagespec.PageSpecHandler;
+import com.galenframework.speclang2.pagespec.PageSpecReader;
+import com.galenframework.speclang2.pagespec.PostProcessor;
 import com.galenframework.speclang2.pagespec.SectionFilter;
+import com.galenframework.specs.page.PageSpec;
 import com.galenframework.validation.ValidationResult;
 
 import jp.vmi.selenium.selenese.Context;
@@ -60,12 +68,54 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 
 		@Override
 		protected Result executeImpl(Context context, String... curArgs) {
-			String tGSpec = curArgs[0].trim();
+
+			// get gspec file if specidfied
+			String tGSpec = null;
+			if (curArgs[0] != null) {
+				tGSpec = curArgs[0].trim();
+			}
+
+			// get gspec as value if specified
+			String tGspecValue = null;
+			if (curArgs[1] != null) {
+				tGspecValue = curArgs[1];
+			}
+
+			PageSpec actualPageSpec = new PageSpec();
+			PageSpecReader reader = new PageSpecReader();
+
+			// use specified value first!
+			if (tGspecValue != null) {
+				IndentationStructureParser structParser = new IndentationStructureParser();
+				try {
+				List<StructNode> structs = structParser.parse(tGspecValue);
+				PageSpec tempSpec = new PageSpec();
+				PageSpecHandler pageSpecHandler = new PageSpecHandler(tempSpec,
+						new SeleniumBrowser(context.getWrappedDriver()).getPage(), new SectionFilter(NO_TAGS, NO_TAGS),
+						"", null, null);
+
+				List<StructNode> allProcessedChildNodes = new MacroProcessor(pageSpecHandler).process(structs);
+				new PostProcessor(pageSpecHandler).process(allProcessedChildNodes);
+
+				actualPageSpec = pageSpecHandler.buildPageSpec();
+				} catch (IOException e) {
+					
+				}
+
+			} else {
+
+				try {
+					actualPageSpec = reader.read(tGSpec, new SeleniumBrowser(context.getWrappedDriver()).getPage(),
+							new SectionFilter(NO_TAGS, NO_TAGS), null, null, null);
+				} catch (IOException e) {
+
+				}
+			}
 			String title = "Check layout: " + tGSpec;
 			LayoutReport layoutReport = null;
 			try {
-				layoutReport = Galen.checkLayout(context.getWrappedDriver(), tGSpec,
-						new SectionFilter(NO_TAGS, NO_TAGS), NO_PROPERTIES, NO_JS_VARIABLES);
+				layoutReport = Galen.checkLayout(new SeleniumBrowser(context.getWrappedDriver()), actualPageSpec,
+						new SectionFilter(NO_TAGS, NO_TAGS), null);
 			} catch (IOException e) {
 				logger.error("Error reading file: {}", tGSpec, e);
 			}
@@ -87,7 +137,7 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 			return new Success("ok");
 		}
 	}
-    
+
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
@@ -121,7 +171,7 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 			return new Success("ok");
 		}
 	}
-	
+
 	/**
 	 * Weiche fuer die neuen Commands: - loadUserCredentials <pathToJS> -
 	 * saveVariables <pathToExport> - loadVariables <pathToExport> - downloadFile -
@@ -132,7 +182,6 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 	public ICommand newCommand(int index, String name, String... args) {
 		LoggerUtils.quote("Called newCommand for " + name);
 
-		
 		// Galen Framework integration
 		if (name.contentEquals("checkLayout")) {
 			return new CheckLayout(index, name, args);

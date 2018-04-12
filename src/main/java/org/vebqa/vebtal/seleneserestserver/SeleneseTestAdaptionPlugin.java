@@ -142,16 +142,37 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	}
 
 	public static void addCommandToList(Command aCmd) {
-		CommandResult tCR = new CommandResult(aCmd.getCommand(), aCmd.getTarget(), aCmd.getValue());
-		Platform.runLater(() -> clData.add(tCR));
+		final CommandResult tCR = new CommandResult(aCmd.getCommand(), aCmd.getTarget(), aCmd.getValue());
+		// Platform.runLater(() -> clData.add(tCR));
+		
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				clData.add(tCR);
+			}
+		});
 	}
 
 	public static void setLatestResult(Boolean success, final String aResult) {
-		Platform.runLater(() -> clData.get(clData.size() - 1).setLogInfo(aResult));
-		Platform.runLater(() -> clData.get(clData.size() - 1).setResult(success));
-
-		commandList.refresh();
-		commandList.scrollTo(clData.size() - 1);
+		
+//		Platform.runLater(() -> clData.get(clData.size() - 1).setLogInfo(aResult));
+//		Platform.runLater(() -> clData.get(clData.size() - 1).setResult(success));
+//
+//		commandList.refresh();
+//		commandList.scrollTo(clData.size() - 1);
+		
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				clData.get(clData.size() - 1).setLogInfo(aResult);
+				clData.get(clData.size() - 1).setResult(success);
+				commandList.refresh();
+				commandList.scrollTo(clData.size() - 1);
+			}
+		});
+		
 	}
 	
 }
