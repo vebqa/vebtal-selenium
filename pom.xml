@@ -9,16 +9,12 @@
 	<artifactId>vebtal-selenium</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<dependencies>
 		<!-- interne Projektreferenzen -->
 		<dependency>
 			<groupId>org.vebqa.vebtal</groupId>
-			<artifactId>vebtal-manager</artifactId>
-			<version>0.0.1-Snapshot</version>
+			<artifactId>vebtal-api</artifactId>
+			<version>0.9</version>
 		</dependency>
 
 		<dependency>

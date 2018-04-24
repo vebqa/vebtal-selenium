@@ -11,11 +11,6 @@ public class AdditionalSeleneseTestAdaptionPlugin extends AbstractTestAdaptionPl
 		super(TestAdaptionType.EXTENSION);
 	}
 	
-	// There is no implementation?
-	public Class getImplementation() {
-		return null;
-	}
-
 	public String getName() {
 		return "Selenese Extension Plugin for VEBTAL. Implementing miscelanous commands, e.g. resizing, downloading.";
 	}
