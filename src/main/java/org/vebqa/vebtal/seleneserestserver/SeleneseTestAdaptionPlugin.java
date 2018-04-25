@@ -45,7 +45,7 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	}
 
 	@Override
-	public Class getImplementation() {
+	public Class<?> getImplementation() {
 		return SeleneseResource.class;
 	}
 	
