@@ -26,6 +26,8 @@ import javafx.scene.layout.HBox;
 @SuppressWarnings("restriction")
 public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
+	private static final String ID = "selenese";
+	
 	public SeleneseTestAdaptionPlugin() {
 		super(TestAdaptionType.ADAPTER);
 	}
@@ -175,4 +177,8 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		
 	}
 	
+	@Override
+	public String getAdaptionID() {
+		return ID;
+	}	
 }
