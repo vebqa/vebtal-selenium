@@ -227,7 +227,7 @@ public class SeleneseContext implements Context {
     /**
      * Return empty set of log filter.
      * 
-     * @return
+     * @return	Enum of logfilter
      */
 	@Override
 	public EnumSet<LogFilter> getLogFilter() {

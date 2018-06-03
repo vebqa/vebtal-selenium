@@ -48,7 +48,7 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
 	@Override
 	public Class<?> getImplementation() {
-		return SeleneseResource.class;
+		return null;
 	}
 	
 	@Override
@@ -157,12 +157,6 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	}
 
 	public static void setLatestResult(Boolean success, final String aResult) {
-		
-//		Platform.runLater(() -> clData.get(clData.size() - 1).setLogInfo(aResult));
-//		Platform.runLater(() -> clData.get(clData.size() - 1).setResult(success));
-//
-//		commandList.refresh();
-//		commandList.scrollTo(clData.size() - 1);
 		
 		Platform.runLater(new Runnable() {
 			

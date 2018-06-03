@@ -73,8 +73,7 @@ public class FileDownloader {
 	 * Specify if the FileDownloader class should follow redirects when trying
 	 * to download a file Default: true
 	 *
-	 * @param followRedirects
-	 *            boolean
+	 * @param followRedirects boolean
 	 */
 	public void followRedirectsWhenDownloading(boolean followRedirects) {
 		this.followRedirects = followRedirects;
@@ -85,8 +84,7 @@ public class FileDownloader {
 	 * you to access files that are only available when logged in. If set to
 	 * false the connection will be made as an anonymouse user
 	 *
-	 * @param mimicWebDriverCookies
-	 *            boolean
+	 * @param mimicWebDriverCookies boolean
 	 */
 	public void mimicWebDriverCookieState(boolean mimicWebDriverCookies) {
 		mimicWebDriverCookieState = mimicWebDriverCookies;
@@ -108,8 +106,8 @@ public class FileDownloader {
 	 *
 	 * @param linkToFile
 	 *            String
-	 * @throws MalformedURLException
-	 * @throws URISyntaxException
+	 * @throws MalformedURLException thrown if url is not well formed
+	 * @throws URISyntaxException exception
 	 */
 	public void setURI(String linkToFile) throws MalformedURLException, URISyntaxException {
 		fileURI = new URI(linkToFile);
@@ -121,7 +119,7 @@ public class FileDownloader {
 	 *
 	 * @param linkToFile
 	 *            URI
-	 * @throws MalformedURLException
+	 * @throws MalformedURLException thrown if url is not well formed
 	 */
 	public void setURI(URI linkToFile) throws MalformedURLException {
 		fileURI = linkToFile;
@@ -133,6 +131,7 @@ public class FileDownloader {
 	 *
 	 * @param linkToFile
 	 *            URL
+	 * @throws URISyntaxException in case of wrong URI
 	 */
 	public void setURI(URL linkToFile) throws URISyntaxException {
 		fileURI = linkToFile.toURI();
@@ -144,7 +143,7 @@ public class FileDownloader {
 	 *
 	 * @param anchorElement
 	 *            Selenium WebElement
-	 * @throws Exception
+	 * @throws Exception an exception
 	 */
 	public void setURISpecifiedInAnchorElement(WebElement anchorElement) throws Exception {
 		if (("a").equals(anchorElement.getTagName())) {
@@ -160,7 +159,7 @@ public class FileDownloader {
 	 *
 	 * @param imageElement
 	 *            Selenium WebElement
-	 * @throws Exception
+	 * @throws Exception an exception
 	 */
 	public void setURISpecifiedInImageElement(WebElement imageElement) throws Exception {
 		if (imageElement.getTagName().equals("img")) {
@@ -254,8 +253,8 @@ public class FileDownloader {
 	 * Gets the HTTP status code returned when trying to access the specified
 	 * URI
 	 *
-	 * @return File
-	 * @throws Exception
+	 * @return HTTP status code as integer
+	 * @throws Exception an exception
 	 */
 	public int getLinkHTTPStatus() throws Exception {
 		HttpResponse fileToDownload = getHTTPResponse();
@@ -273,7 +272,7 @@ public class FileDownloader {
 	 * Download a file from the specified URI
 	 *
 	 * @return File
-	 * @throws Exception
+	 * @throws Exception an exception
 	 */
 	public File downloadFile() throws Exception {
 		doTrustToCertificates();

@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.selenese.filedownloader.FileDownloader;
 import org.vebqa.vebtal.selenese.filedownloader.RequestMethod;
 import org.vebqa.vebtal.selenese.filedownloader.URLStatus;
+import org.vebqa.vebtal.seleneserestserver.SeleneseResource;
+import org.vebqa.vebtal.seleneserestserver.SeleneseTestAdaptionPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -630,13 +632,28 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
-	/**
-	 * Weiche fuer die neuen Commands: - loadUserCredentials <pathToJS> -
-	 * saveVariables <pathToExport> - loadVariables <pathToExport> - downloadFile -
-	 * checkUrl <target> <StatusCode>
-	 * 
-	 * TODO: Refactor to map.
-	 */
+	private static class Close extends AbstractCommand {
+
+		Close(int index, String name, String... args) {
+			super(index, name, args, VALUE, VALUE, VALUE);
+		}
+
+		@Override
+		protected Result executeImpl(Context context, String... curArgs) {
+			try {
+				context.getWrappedDriver().close();
+				SeleneseResource.getManager().quitDriver();
+			} catch (Exception e) {
+				return new Failure("Something went wrong while closing the webdriver! " + e.getMessage());
+			}
+						
+			// Browser Auswahlbox kann wieder aktiviert werden.
+			SeleneseTestAdaptionPlugin.enableCombobox();
+			return new Success("ok");
+		}
+	}
+	
+	
 	public ICommand newCommand(int index, String name, String... args) {
 		LoggerUtils.quote("Called newCommand for " + name);
 		if (name.contentEquals("loadUserCredentials")) {
@@ -669,6 +686,9 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 
 		if (name.contentEquals("resize")) {
 			return new ResizeWindow(index, name, args);
+		}
+		if (name.contentEquals("close")) {
+			return new Close(index, name, args);
 		}
 
 		return null;

@@ -1,5 +1,12 @@
 package org.vebqa.vebtal.selenese.filedownloader;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Set;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -14,13 +21,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Set;
 
 public class URLStatus {
     private static final Logger logger = LoggerFactory.getLogger(URLStatus.class);
@@ -37,9 +37,9 @@ public class URLStatus {
     /**
      * Specify a URL that you want to perform an HTTP Status Check upon
      *
-     * @param linkToCheck
-     * @throws MalformedURLException
-     * @throws URISyntaxException
+     * @param 	linkToCheck	Link to check
+     * @throws MalformedURLException	thrown if url is not well formed
+     * @throws URISyntaxException	thrown if an URI syntax error occured
      */
     public void setURIToCheck(String linkToCheck) throws MalformedURLException, URISyntaxException {
         this.linkToCheck = new URI(linkToCheck);
@@ -48,8 +48,8 @@ public class URLStatus {
     /**
      * Specify a URL that you want to perform an HTTP Status Check upon
      *
-     * @param linkToCheck
-     * @throws MalformedURLException
+     * @param	linkToCheck	Link to check
+     * @throws MalformedURLException	thrown if url is not well formed
      */
     public void setURIToCheck(URI linkToCheck) throws MalformedURLException {
         this.linkToCheck = linkToCheck;
@@ -58,7 +58,8 @@ public class URLStatus {
     /**
      * Specify a URL that you want to perform an HTTP Status Check upon
      *
-     * @param linkToCheck
+     * @param	linkToCheck	Link to check
+     * @throws URISyntaxException Exception
      */
     public void setURIToCheck(URL linkToCheck) throws URISyntaxException {
         this.linkToCheck = linkToCheck.toURI();
@@ -67,7 +68,7 @@ public class URLStatus {
     /**
      * Set the HTTP Request Method (Defaults to 'GET')
      *
-     * @param requestMethod
+     * @param requestMethod request
      */
     public void setHTTPRequestMethod(RequestMethod requestMethod) {
         this.httpRequestMethod = requestMethod;
@@ -78,7 +79,7 @@ public class URLStatus {
      * If set to true a 302 will not be returned, instead you will get the status code after the redirect has been followed
      * DEFAULT: false
      *
-     * @param value
+     * @param value boolean, set to true if follow redirects
      */
     public void followRedirects(Boolean value) {
         this.followRedirects = value;
@@ -87,8 +88,8 @@ public class URLStatus {
     /**
      * Perform an HTTP Status check and return the response code
      *
-     * @return
-     * @throws IOException
+     * @return HTTP status code
+     * @throws IOException there might be an exception during executing the client
      */
     public int getHTTPStatusCode() throws IOException {
  
@@ -117,7 +118,7 @@ public class URLStatus {
      * This will enable you to access files that are only available when logged in.
      * If set to false the connection will be made as an anonymouse user
      *
-     * @param value
+     * @param value boolean, see documention
      */
     public void mimicWebDriverCookieState(boolean value) {
         this.mimicWebDriverCookieState = value;
@@ -126,8 +127,8 @@ public class URLStatus {
     /**
      * Load in all the cookies WebDriver currently knows about so that we can mimic the browser cookie state
      *
-     * @param seleniumCookieSet
-     * @return
+     * @param seleniumCookieSet set of all cookies we alreade know
+     * @return BasicCookieStore
      */
     private BasicCookieStore mimicCookieState(Set<Cookie> seleniumCookieSet) {
         BasicCookieStore mimicWebDriverCookieStore = new BasicCookieStore();

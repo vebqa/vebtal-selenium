@@ -1,11 +1,5 @@
 package org.vebqa.vebtal.seleneserestserver;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.model.Command;
@@ -19,8 +13,6 @@ import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
-
-@Path("selenese")
 public class SeleneseResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeleneseResource.class);
@@ -29,10 +21,6 @@ public class SeleneseResource {
 	
 	private static WebDriverManager manager = null;
 	
-	@POST
-	@Path("execute")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response executeSelenese(Command cmd) {
 		SeleneseTestAdaptionPlugin.addCommandToList(cmd);
 		
@@ -123,29 +111,30 @@ public class SeleneseResource {
 		return new Response();
 	}
 
-	@POST
-	@Path("close")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response tearDownBrowser() {
-		Response tResponse = new Response();
-		
-		try {
-			seleneseContext.getWrappedDriver().close();
-			manager.quitDriver();
-			manager = null;
-		} catch (Exception e) {
-			tResponse.setCode("1");
-			tResponse.setMessage("Something went wrong while closing the webdriver! " + e.getMessage());
-			return tResponse;
-		}
-		
-		tResponse.setCode("0");
-		tResponse.setMessage("Webdriver closed successfully!");
-		
-		// Browser Auswahlbox kann wieder aktiviert werden.
-		SeleneseTestAdaptionPlugin.enableCombobox();
+	// close!
+//	public Response tearDownBrowser() {
+//		Response tResponse = new Response();
+//		
+//		try {
+//			seleneseContext.getWrappedDriver().close();
+//			manager.quitDriver();
+//			manager = null;
+//		} catch (Exception e) {
+//			tResponse.setCode("1");
+//			tResponse.setMessage("Something went wrong while closing the webdriver! " + e.getMessage());
+//			return tResponse;
+//		}
+//		
+//		tResponse.setCode("0");
+//		tResponse.setMessage("Webdriver closed successfully!");
+//		
+//		// Browser Auswahlbox kann wieder aktiviert werden.
+//		SeleneseTestAdaptionPlugin.enableCombobox();
+//	
+//		return tResponse;
+//	}
 	
-		return tResponse;
+	public static WebDriverManager getManager() {
+		return manager;
 	}
 }

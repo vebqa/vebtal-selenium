@@ -172,13 +172,6 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
-	/**
-	 * Weiche fuer die neuen Commands: - loadUserCredentials <pathToJS> -
-	 * saveVariables <pathToExport> - loadVariables <pathToExport> - downloadFile -
-	 * checkUrl <target> <StatusCode>
-	 * 
-	 * TODO: Refactor to map.
-	 */
 	public ICommand newCommand(int index, String name, String... args) {
 		LoggerUtils.quote("Called newCommand for " + name);
 
