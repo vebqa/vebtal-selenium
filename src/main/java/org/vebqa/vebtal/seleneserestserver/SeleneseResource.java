@@ -2,6 +2,7 @@ package org.vebqa.vebtal.seleneserestserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vebqa.vebtal.TestAdaptionResource;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.Response;
 
@@ -13,7 +14,7 @@ import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
-public class SeleneseResource {
+public class SeleneseResource implements TestAdaptionResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeleneseResource.class);
 	
@@ -21,7 +22,7 @@ public class SeleneseResource {
 	
 	private static WebDriverManager manager = null;
 	
-	public Response executeSelenese(Command cmd) {
+	public Response execute(Command cmd) {
 		SeleneseTestAdaptionPlugin.addCommandToList(cmd);
 		
 		// Default Config laden
@@ -111,29 +112,6 @@ public class SeleneseResource {
 		return new Response();
 	}
 
-	// close!
-//	public Response tearDownBrowser() {
-//		Response tResponse = new Response();
-//		
-//		try {
-//			seleneseContext.getWrappedDriver().close();
-//			manager.quitDriver();
-//			manager = null;
-//		} catch (Exception e) {
-//			tResponse.setCode("1");
-//			tResponse.setMessage("Something went wrong while closing the webdriver! " + e.getMessage());
-//			return tResponse;
-//		}
-//		
-//		tResponse.setCode("0");
-//		tResponse.setMessage("Webdriver closed successfully!");
-//		
-//		// Browser Auswahlbox kann wieder aktiviert werden.
-//		SeleneseTestAdaptionPlugin.enableCombobox();
-//	
-//		return tResponse;
-//	}
-	
 	public static WebDriverManager getManager() {
 		return manager;
 	}
