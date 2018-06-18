@@ -1,9 +1,45 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-		<groupId>org.vebqa.vebtal</groupId>
+	<groupId>com.github.vebqa</groupId>
 	<artifactId>vebtal-selenium</artifactId>
 	<version>0.9.1</version>
+
+	<name>Test Adaption Layer to access webpages via webdriver.</name>
+	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
+	<inceptionYear>2018</inceptionYear>
+
+	<packaging>jar</packaging>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/vebqa/vebtal-selenium</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/vebqa/vebtal-selenium/issues</url>
+	</issueManagement>
+
+	<organization>
+		<name>VON ESSEN Bank GmbH</name>
+		<url>https://www.vonessenbank.de</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Karsten Doerges</name>
+			<email>kdoerges@googlemail.com</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,6 +58,11 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -92,7 +133,7 @@
 	<dependencies>
 		<!-- interne Projektreferenzen -->
 		<dependency>
-			<groupId>org.vebqa.vebtal</groupId>
+			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
 			<version>0.9.1</version>
 		</dependency>
