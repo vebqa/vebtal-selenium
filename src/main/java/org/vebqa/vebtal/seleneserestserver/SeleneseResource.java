@@ -2,6 +2,7 @@ package org.vebqa.vebtal.seleneserestserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vebqa.vebtal.AbstractTestAdaptionResource;
 import org.vebqa.vebtal.TestAdaptionResource;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.Response;
@@ -14,7 +15,7 @@ import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
-public class SeleneseResource implements TestAdaptionResource {
+public class SeleneseResource extends AbstractTestAdaptionResource implements TestAdaptionResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeleneseResource.class);
 	
@@ -80,7 +81,10 @@ public class SeleneseResource implements TestAdaptionResource {
 		TestCase tCase = new TestCase();
 		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand() , cmd.getTarget(), cmd.getValue());
 		seleneseContext.setCurrentTestCase(tCase);
+		
+		setStart();
 		Result result = tCase.execute(null, seleneseContext);
+		setFinished();
 		
 		Response tResponse = new Response();
 		tResponse.setCode(String.valueOf(result.getLevel().value));
