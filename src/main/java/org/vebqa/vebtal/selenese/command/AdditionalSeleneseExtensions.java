@@ -23,11 +23,13 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vebqa.vebtal.GuiManager;
 import org.vebqa.vebtal.selenese.filedownloader.FileDownloader;
 import org.vebqa.vebtal.selenese.filedownloader.RequestMethod;
 import org.vebqa.vebtal.selenese.filedownloader.URLStatus;
 import org.vebqa.vebtal.seleneserestserver.SeleneseResource;
 import org.vebqa.vebtal.seleneserestserver.SeleneseTestAdaptionPlugin;
+import org.vebqa.vebtal.sut.SutStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -649,6 +651,8 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 						
 			// Browser Auswahlbox kann wieder aktiviert werden.
 			SeleneseTestAdaptionPlugin.enableCombobox();
+			GuiManager.getinstance().setTabStatus(SeleneseTestAdaptionPlugin.ID, SutStatus.DISCONNECTED);
+			
 			return new Success("ok");
 		}
 	}

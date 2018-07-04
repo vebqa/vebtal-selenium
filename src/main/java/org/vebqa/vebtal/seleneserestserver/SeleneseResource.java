@@ -3,9 +3,11 @@ package org.vebqa.vebtal.seleneserestserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionResource;
+import org.vebqa.vebtal.GuiManager;
 import org.vebqa.vebtal.TestAdaptionResource;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.Response;
+import org.vebqa.vebtal.sut.SutStatus;
 
 import jp.vmi.selenium.selenese.TestCase;
 import jp.vmi.selenium.selenese.command.ICommandFactory;
@@ -46,6 +48,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
+			GuiManager.getinstance().setTabStatus(SeleneseTestAdaptionPlugin.ID, SutStatus.CONNECTED);
 			
 			manager.setDriverOptions(driverOptions);
 		}
