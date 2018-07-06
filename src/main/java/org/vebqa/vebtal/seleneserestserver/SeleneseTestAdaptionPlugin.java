@@ -6,6 +6,7 @@ import org.vebqa.vebtal.AbstractTestAdaptionPlugin;
 import org.vebqa.vebtal.TestAdaptionType;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.CommandResult;
+import org.vebqa.vebtal.model.CommandType;
 import org.vebqa.vebtal.seleneserestserver.util.DriverManager;
 
 import javafx.application.Platform;
@@ -88,8 +89,8 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		browserComboBox.setDisable(false);
 	}
 
-	public static void addCommandToList(Command aCmd) {
-		final CommandResult tCR = new CommandResult(aCmd.getCommand(), aCmd.getTarget(), aCmd.getValue());
+	public static void addCommandToList(Command aCmd, CommandType aType) {
+		final CommandResult tCR = new CommandResult(aCmd.getCommand(), aCmd.getTarget(), aCmd.getValue(), aType);
 		// Platform.runLater(() -> clData.add(tCR));
 		
 		Platform.runLater(new Runnable() {

@@ -6,6 +6,7 @@ import org.vebqa.vebtal.AbstractTestAdaptionResource;
 import org.vebqa.vebtal.GuiManager;
 import org.vebqa.vebtal.TestAdaptionResource;
 import org.vebqa.vebtal.model.Command;
+import org.vebqa.vebtal.model.CommandType;
 import org.vebqa.vebtal.model.Response;
 import org.vebqa.vebtal.sut.SutStatus;
 
@@ -26,7 +27,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 	private static WebDriverManager manager = null;
 	
 	public Response execute(Command cmd) {
-		SeleneseTestAdaptionPlugin.addCommandToList(cmd);
+		SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.UNDEFINED);
 		
 		// Default Config laden
 		// @ToDo: RemoteDriver durchschleifen
