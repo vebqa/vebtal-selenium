@@ -23,6 +23,9 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
 	public static final String ID = "selenese";
 	
+	private static final String DEFAULTBROWSER = "Chrome";
+	private static final String DEFAULTPROXY = "Proxy: None";
+	
 	public SeleneseTestAdaptionPlugin() {
 		super(TestAdaptionType.ADAPTER);
 	}
@@ -30,6 +33,10 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	/** Browser selection **/
 	private static final ComboBox<String> browserComboBox = new ComboBox<>();
 
+	/** Proxy selection **/
+	private static final ComboBox<String> proxyComboBox = new ComboBox<>();
+	
+	
 	private static final TableView<CommandResult> commandList = new TableView<>();
 	private static final ObservableList<CommandResult> clData = FXCollections.observableArrayList();
 
@@ -61,12 +68,17 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		}
 
 		// Default: Chrome
-		browserComboBox.getSelectionModel().select("Chrome");
+		browserComboBox.getSelectionModel().select(DEFAULTBROWSER);
 
+		// Default: none
+		proxyComboBox.getItems().add("Proxy: None");
+		proxyComboBox.getItems().add("8888");
+		proxyComboBox.getSelectionModel().select(DEFAULTPROXY);
+		
 		BorderPane pane = (BorderPane)seleneseTab.getContent();
 		// Top bauen
 		HBox hbox = new HBox();
-		hbox.getChildren().addAll(browserComboBox);
+		hbox.getChildren().addAll(browserComboBox, proxyComboBox);
 		pane.setTop(hbox);
 		
 		return seleneseTab;
@@ -80,13 +92,19 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	public static String getSelectedDriver() {
 		return browserComboBox.getValue();
 	}
+	
+	public static String getSelectedProxy() {
+		return proxyComboBox.getValue();
+	}
 
 	public static void disableComboBox() {
 		browserComboBox.setDisable(true);
+		proxyComboBox.setDisable(true);
 	}
 
 	public static void enableCombobox() {
 		browserComboBox.setDisable(false);
+		proxyComboBox.setDisable(false);
 	}
 
 	public static void addCommandToList(Command aCmd, CommandType aType) {

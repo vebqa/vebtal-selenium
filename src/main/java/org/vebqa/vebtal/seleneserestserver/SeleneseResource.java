@@ -16,6 +16,7 @@ import jp.vmi.selenium.selenese.config.DefaultConfig;
 import jp.vmi.selenium.selenese.config.IConfig;
 import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.DriverOptions;
+import jp.vmi.selenium.webdriver.DriverOptions.DriverOption;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
 public class SeleneseResource extends AbstractTestAdaptionResource implements TestAdaptionResource {
@@ -27,31 +28,43 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 	private static WebDriverManager manager = null;
 	
 	public Response execute(Command cmd) {
-		SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.UNDEFINED);
+		if (cmd.getCommand().startsWith("verify")) {
+			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ASSERTION);
+		} else if (cmd.getCommand().startsWith("store")) {
+			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
+		} else {
+			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACTION);
+		}
 		
 		// Default Config laden
 		// @ToDo: RemoteDriver durchschleifen
 		IConfig config = new DefaultConfig();
 		DriverOptions driverOptions = new DriverOptions(config);
 		
+		if (!"Proxy: None".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedProxy())) {
+			driverOptions.set(DriverOption.PROXY, "127.0.0.1:8888");
+			logger.info("Proxs settings inserted to diver options.");
+		}
+		
 		// Manager Instanziieren wenn noch nicht geschehen
 		if (manager == null) {
         
 			manager = WebDriverManager.newInstance();
-			
+
 			if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
-				manager.setWebDriverFactory(WebDriverManager.CHROME);	
+				manager.setWebDriverFactory(WebDriverManager.CHROME);
 			} else if ("firefox".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.FIREFOX);
 			} else if ("iexplorer".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.IE);
 			}
-			
+			manager.setDriverOptions(driverOptions);
+		}
+
+		if (cmd.getCommand().contains("open")) {
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
 			GuiManager.getinstance().setTabStatus(SeleneseTestAdaptionPlugin.ID, SutStatus.CONNECTED);
-			
-			manager.setDriverOptions(driverOptions);
 		}
         
         // Manager uebergeben an den Context
