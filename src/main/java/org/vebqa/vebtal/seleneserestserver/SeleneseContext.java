@@ -48,7 +48,7 @@ public class SeleneseContext implements Context {
 	private final Eval eval;
 	private final CommandFactory commandFactory;
 	
-	private int timeout = 30 * 1000; /* ms */
+	private int timeout = 60 * 1000; /* ms */
 	
 	public SeleneseContext() {
 		this.elementFinder = new WebDriverElementFinder();

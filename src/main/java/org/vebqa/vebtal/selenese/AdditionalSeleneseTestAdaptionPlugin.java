@@ -1,5 +1,6 @@
 package org.vebqa.vebtal.selenese;
 
+import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.vebqa.vebtal.AbstractTestAdaptionPlugin;
 import org.vebqa.vebtal.TestAdaptionType;
 
@@ -21,6 +22,12 @@ public class AdditionalSeleneseTestAdaptionPlugin extends AbstractTestAdaptionPl
 
 	// register something but dont create tab
 	public Tab startup() {
+		return null;
+	}
+
+	@Override
+	public FileBasedConfiguration loadConfigString() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
