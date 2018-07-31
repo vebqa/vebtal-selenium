@@ -645,6 +645,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 			try {
 				context.getWrappedDriver().close();
 				SeleneseResource.getManager().quitDriver();
+				SeleneseResource.destroyManager();
 			} catch (Exception e) {
 				return new Failure("Something went wrong while closing the webdriver! " + e.getMessage());
 			}

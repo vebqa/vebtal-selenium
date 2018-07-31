@@ -41,7 +41,9 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		IConfig config = new DefaultConfig();
 		DriverOptions driverOptions = new DriverOptions(config);
 		
-		if (!"Proxy: None".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedProxy())) {
+		if ("Proxy: None".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedProxy())) {
+			logger.info("Browser will use direct connection.");
+		} else {
 			driverOptions.set(DriverOption.PROXY, "127.0.0.1:8888");
 			logger.info("Proxs settings inserted to diver options.");
 		}
@@ -134,6 +136,10 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 	}
 
 	public static WebDriverManager getManager() {
-		return manager;
+		return SeleneseResource.manager;
+	}
+	
+	public static void destroyManager() {
+		SeleneseResource.manager = null;
 	}
 }
