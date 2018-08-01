@@ -3,11 +3,13 @@ package org.vebqa.vebtal.seleneserestserver;
 import java.io.File;
 import java.util.Set;
 
+import org.apache.commons.configuration2.CombinedConfiguration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.tree.OverrideCombiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionPlugin;
@@ -60,26 +62,10 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		return null;
 	}
 	
-	public FileBasedConfiguration loadConfigString() {
-		return loadConfigString(ID);
+	@Override
+	public CombinedConfiguration loadConfig() {
+		return loadConfig(ID);
 	}
-	public FileBasedConfiguration loadConfigString(String aTabIdentifier) {
-		Parameters params = new Parameters();
-		String tPropertiesName = aTabIdentifier + ".properties";
-		File tProperties = new File(tPropertiesName);
-		FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(
-				PropertiesConfiguration.class)
-						.configure(params.properties().setFile(new File(tPropertiesName)));
-		FileBasedConfiguration config = null;
-
-		try {
-			config = builder.getConfiguration();
-		} catch (ConfigurationException e) {
-			logger.warn("Couldnt load configuration file: {}", tProperties.getAbsolutePath());
-		}
-		
-		return config;
-	}	
 	
 	@Override
 	public Tab startup() {
