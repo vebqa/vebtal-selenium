@@ -6,6 +6,7 @@ import org.apache.commons.configuration2.CombinedConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionPlugin;
+import org.vebqa.vebtal.GuiManager;
 import org.vebqa.vebtal.TestAdaptionType;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.CommandResult;
@@ -81,8 +82,28 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		browserComboBox.getSelectionModel().select(DEFAULTBROWSER);
 
 		// Default: none
-		proxyComboBox.getItems().add("Proxy: None");
-		proxyComboBox.getItems().add("8888");
+		proxyComboBox.getItems().add("NoProxy");
+		// manual proxy from settings
+		String tProxyPort = GuiManager.getinstance().getConfig().getString("browser.proxy.port");
+		if (!tProxyPort.contentEquals("0")) {
+			proxyComboBox.getItems().add(tProxyPort);
+		}
+		String zapMode = GuiManager.getinstance().getConfig().getString("zap.mode");
+		switch (zapMode) {
+		case "disable":
+			logger.info("disable zap support!");
+			break;
+		case "auto":
+			proxyComboBox.getItems().add("ZAP");
+			break;
+		case "manual":
+			proxyComboBox.getItems().add("ZAP");
+			break;
+		default:
+			logger.info("skipped value: {} for key: zap.mode. Dont know hat to do!", zapMode);
+			break;
+		}
+		
 		proxyComboBox.getSelectionModel().select(DEFAULTPROXY);
 		
 		BorderPane pane = (BorderPane)seleneseTab.getContent();

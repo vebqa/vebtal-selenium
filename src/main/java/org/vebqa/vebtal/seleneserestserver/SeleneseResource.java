@@ -22,12 +22,14 @@ import jp.vmi.selenium.webdriver.WebDriverManager;
 public class SeleneseResource extends AbstractTestAdaptionResource implements TestAdaptionResource {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeleneseResource.class);
-	
+
 	private static SeleneseContext seleneseContext = new SeleneseContext();
-	
+
 	private static WebDriverManager manager = null;
-	
+
 	public Response execute(Command cmd) {
+
+		// switch command type
 		if (cmd.getCommand().startsWith("verify")) {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ASSERTION);
 		} else if (cmd.getCommand().startsWith("store")) {
@@ -35,22 +37,35 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		} else {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACTION);
 		}
-		
+
 		// Default Config laden
 		// @ToDo: RemoteDriver durchschleifen
 		IConfig config = new DefaultConfig();
 		DriverOptions driverOptions = new DriverOptions(config);
-		
-		if ("Proxy: None".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedProxy())) {
+
+		String tSelectedProxy = SeleneseTestAdaptionPlugin.getSelectedProxy();
+
+		switch (tSelectedProxy) {
+		case "NoProxy":
 			logger.info("Browser will use direct connection.");
-		} else {
-			driverOptions.set(DriverOption.PROXY, "127.0.0.1:8888");
-			logger.info("Proxs settings inserted to diver options.");
+			break;
+		case "ZAP":
+			String tZapHost = GuiManager.getinstance().getConfig().getString("zap.host");
+			String tZapPort = GuiManager.getinstance().getConfig().getString("zap.port");
+			driverOptions.set(DriverOption.PROXY, tZapHost + ":" + tZapPort);
+			// ClientApi api = new ClientApi(tZapHost, Integer.parseInt(tZapPort), null, false);
+			logger.info("Proxy settings for ZAP inserted to driver options.");
+			break;
+		default:
+			String tProxyHost = GuiManager.getinstance().getConfig().getString("browser.proxy.host");
+			driverOptions.set(DriverOption.PROXY, tProxyHost + ":" + tSelectedProxy);
+			logger.info("Proxy settings inserted to driver options.");
+			break;
 		}
-		
+
 		// Manager Instanziieren wenn noch nicht geschehen
 		if (manager == null) {
-        
+
 			manager = WebDriverManager.newInstance();
 
 			if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
@@ -68,43 +83,43 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			SeleneseTestAdaptionPlugin.disableComboBox();
 			GuiManager.getinstance().setTabStatus(SeleneseTestAdaptionPlugin.ID, SutStatus.CONNECTED);
 		}
-        
-        // Manager uebergeben an den Context
+
+		// Manager uebergeben an den Context
 		seleneseContext.setDriver(manager.get());
 		seleneseContext.setWebDriverPreparator(manager);
-		
-		// TODO: refactor to dynamic loading
-        String factoryName = "org.vebqa.vebtal.selenese.command.AdditionalSeleneseExtensions";
-        ICommandFactory factory;
-        try {
-            Class<?> factoryClass = Class.forName(factoryName);
-            factory = (ICommandFactory) factoryClass.newInstance();
-        } catch (Exception e) {
-            logger.error("Error loading user defined command factory: {}", factoryName, e);
-            throw new IllegalArgumentException("invalid user defined command factory: " + factoryName, e);
-        }
-        seleneseContext.getCommandFactory().registerCommandFactory(factory);
-        logger.info("Registered command factory: " + factory);
 
-        factoryName = "org.vebqa.vebtal.selenese.command.GalenSeleneseExtensions";
-        try {
-            Class<?> factoryClass = Class.forName(factoryName);
-            factory = (ICommandFactory) factoryClass.newInstance();
-        } catch (Exception e) {
-            logger.error("Error loading user defined command factory: " + factoryName, e);
-            throw new IllegalArgumentException("invalid user defined command factory: " + factoryName);
-        }
-        seleneseContext.getCommandFactory().registerCommandFactory(factory);
-        logger.info("Registered command factory: {}", factory);        
-        
+		// TODO: refactor to dynamic loading
+		String factoryName = "org.vebqa.vebtal.selenese.command.AdditionalSeleneseExtensions";
+		ICommandFactory factory;
+		try {
+			Class<?> factoryClass = Class.forName(factoryName);
+			factory = (ICommandFactory) factoryClass.newInstance();
+		} catch (Exception e) {
+			logger.error("Error loading user defined command factory: {}", factoryName, e);
+			throw new IllegalArgumentException("invalid user defined command factory: " + factoryName, e);
+		}
+		seleneseContext.getCommandFactory().registerCommandFactory(factory);
+		logger.info("Registered command factory: " + factory);
+
+		factoryName = "org.vebqa.vebtal.selenese.command.GalenSeleneseExtensions";
+		try {
+			Class<?> factoryClass = Class.forName(factoryName);
+			factory = (ICommandFactory) factoryClass.newInstance();
+		} catch (Exception e) {
+			logger.error("Error loading user defined command factory: " + factoryName, e);
+			throw new IllegalArgumentException("invalid user defined command factory: " + factoryName);
+		}
+		seleneseContext.getCommandFactory().registerCommandFactory(factory);
+		logger.info("Registered command factory: {}", factory);
+
 		TestCase tCase = new TestCase();
-		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand() , cmd.getTarget(), cmd.getValue());
+		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand(), cmd.getTarget(), cmd.getValue());
 		seleneseContext.setCurrentTestCase(tCase);
-		
+
 		setStart();
 		Result result = tCase.execute(null, seleneseContext);
 		setFinished();
-		
+
 		Response tResponse = new Response();
 		tResponse.setCode(String.valueOf(result.getLevel().value));
 		String tMessage = "";
@@ -112,25 +127,25 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			// Wenn Command ein Store Befehl war das Ziel an Tosca senden
 			if (cmd.getCommand().startsWith("store")) {
 				tResponse.setStoredKey(cmd.getValue());
-				tResponse.setStoredValue((String)seleneseContext.getVarsMap().get(cmd.getValue()));
+				tResponse.setStoredValue((String) seleneseContext.getVarsMap().get(cmd.getValue()));
 			}
 
-			tResponse.setMessage("Successfully processed command: " + cmd.getCommand() + " with target: " + cmd.getTarget() + " and value: " + cmd.getValue());
+			tResponse.setMessage("Successfully processed command: " + cmd.getCommand() + " with target: "
+					+ cmd.getTarget() + " and value: " + cmd.getValue());
 			tMessage = "Successfully processed command";
 		} else if (result.isFailed()) {
 			tResponse.setMessage("Command failed: " + result.getMessage());
-			tMessage = result.getMessage(); 
+			tMessage = result.getMessage();
 		} else if (result.isAborted()) {
 			tResponse.setMessage("Command aborted! ");
 			tMessage = "Command aborted";
 		}
-		
+
 		SeleneseTestAdaptionPlugin.setLatestResult(result.isSuccess(), tMessage);
-		
+
 		return tResponse;
 	}
 
-	
 	public Response setupBrowser() {
 		return new Response();
 	}
@@ -138,7 +153,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 	public static WebDriverManager getManager() {
 		return SeleneseResource.manager;
 	}
-	
+
 	public static void destroyManager() {
 		SeleneseResource.manager = null;
 	}
