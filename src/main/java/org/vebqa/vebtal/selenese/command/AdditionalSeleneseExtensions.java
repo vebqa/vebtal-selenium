@@ -18,8 +18,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -206,28 +210,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 				return new Failure(tfe);
 			}
 			return new Success(countElements + " variables successfully written to file: " + varFile.getAbsolutePath());
-		}
-
-	}
-
-	/**
-	 * Command "loadData" - lade Daten aus der Import Schnittstelle in den Selenese
-	 * Variablen Raum. Die Import Schnittstelle ist ein XML File, wobei die Keys das
-	 * Tag repraesentieren und der Textcontent den Value.
-	 * 
-	 * @author doerges
-	 *
-	 */
-	private static class LoadData extends AbstractCommand {
-
-		public LoadData(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 	}
@@ -586,20 +568,46 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
-	private static class LoadFuzzingData extends AbstractCommand {
+	private static class TakeScreenshot extends AbstractCommand {
 
-		LoadFuzzingData(int index, String name, String... args) {
+		TakeScreenshot(int index, String name, String... args) {
 			super(index, name, args, VALUE, VALUE, VALUE);
 		}
 
 		@Override
 		protected Result executeImpl(Context context, String... curArgs) {
-			String aCollectionName = curArgs[0];
-			context.getCollectionMap().addCollection(aCollectionName);
+			logger.info("Called executeImpl with Argument lengt: {}", curArgs.length);
+			String tScreenshotFile = curArgs[0];
+			
+			File scrFile = ((TakesScreenshot)context.getWrappedDriver()).getScreenshotAs(OutputType.FILE);
+			File targetFile = new File(tScreenshotFile);
+			logger.info("target file for screenshot: {}", targetFile);
+			
+			try {
+				FileUtils.copyFile(scrFile, targetFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return new Success("ok");
 		}
 	}
 
+	private static class BlurElement extends AbstractCommand {
+
+		BlurElement(int index, String name, String... args) {
+			super(index, name, args, VALUE, VALUE, VALUE);
+		}
+
+		@Override
+		protected Result executeImpl(Context context, String... curArgs) {
+			logger.info("Called executeImpl with Argument lengt: {}", curArgs.length);
+			String element = curArgs[0].trim();
+			
+			Object result = ((JavascriptExecutor) context.getWrappedDriver()).executeScript("return document.getElementById('"+element+"').blur()");
+			return new Success("ok");
+		}
+	}
+	
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
@@ -688,7 +696,12 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		if (name.contentEquals("downloadFileByClickFromBrowser")) {
 			return new DownloadFileByClickFromBrowser(index, name, args);
 		}
-
+		if (name.contentEquals("takeScreenshot")) {
+			return new TakeScreenshot(index, name, args);
+		}
+		if (name.contentEquals("blur")) {
+			return new BlurElement(index, name, args);
+		}		
 		if (name.contentEquals("resize")) {
 			return new ResizeWindow(index, name, args);
 		}

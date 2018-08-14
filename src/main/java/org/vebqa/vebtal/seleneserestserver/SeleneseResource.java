@@ -32,8 +32,12 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		// switch command type
 		if (cmd.getCommand().startsWith("verify")) {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ASSERTION);
+		} else if (cmd.getCommand().startsWith("assert")) {
+			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ASSERTION);
 		} else if (cmd.getCommand().startsWith("store")) {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
+		} else if (cmd.getCommand().startsWith("take")) {
+				SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
 		} else {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACTION);
 		}
