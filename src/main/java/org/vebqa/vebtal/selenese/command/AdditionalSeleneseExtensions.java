@@ -592,22 +592,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
-	private static class BlurElement extends AbstractCommand {
-
-		BlurElement(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			logger.info("Called executeImpl with Argument lengt: {}", curArgs.length);
-			String element = curArgs[0].trim();
-			
-			Object result = ((JavascriptExecutor) context.getWrappedDriver()).executeScript("return document.getElementById('"+element+"').blur()");
-			return new Success("ok");
-		}
-	}
-	
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
@@ -699,9 +683,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		if (name.contentEquals("takeScreenshot")) {
 			return new TakeScreenshot(index, name, args);
 		}
-		if (name.contentEquals("blur")) {
-			return new BlurElement(index, name, args);
-		}		
 		if (name.contentEquals("resize")) {
 			return new ResizeWindow(index, name, args);
 		}
