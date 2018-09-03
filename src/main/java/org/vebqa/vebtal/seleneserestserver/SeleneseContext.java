@@ -37,7 +37,7 @@ public class SeleneseContext implements Context {
 	private final Deque<CommandListIterator> commandListIteratorStack = new ArrayDeque<>();
 	private TestCase currentTestCase = null;
 	private PageInformation latestPageInformation = PageInformation.EMPTY;
-	private final ModifierKeyState modifierKeyState = new ModifierKeyState();
+	private final ModifierKeyState modifierKeyState;
 	private final CollectionMap collectionMap = new CollectionMap();
 	private final WebDriverElementFinder elementFinder;
 	private WebDriver driver = null;
@@ -56,6 +56,7 @@ public class SeleneseContext implements Context {
         this.eval = new Eval();
         this.varsMap = new VarsMap();
         this.commandFactory = new CommandFactory(this);
+        this.modifierKeyState = new ModifierKeyState(this);
     }
 	
 	public Deque<CommandListIterator> getCommandListIteratorStack() {
@@ -236,7 +237,6 @@ public class SeleneseContext implements Context {
 
 	@Override
 	public AlertActionListener getNextNativeAlertActionListener() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
