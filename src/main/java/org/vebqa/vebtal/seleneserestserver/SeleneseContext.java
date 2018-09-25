@@ -56,7 +56,7 @@ public class SeleneseContext implements Context {
         this.eval = new Eval();
         this.varsMap = new VarsMap();
         this.commandFactory = new CommandFactory(this);
-        this.modifierKeyState = new ModifierKeyState(this);
+        this.modifierKeyState = new ModifierKeyState();
     }
 	
 	public Deque<CommandListIterator> getCommandListIteratorStack() {
