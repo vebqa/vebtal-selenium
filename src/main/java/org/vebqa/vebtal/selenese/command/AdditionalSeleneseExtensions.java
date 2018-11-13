@@ -635,7 +635,8 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		@Override
 		protected Result executeImpl(Context context, String... curArgs) {
 			try {
-				context.getWrappedDriver().close();
+				
+				// context.getWrappedDriver().close();
 				SeleneseResource.getManager().quitDriver();
 				SeleneseResource.destroyManager();
 			} catch (Exception e) {
@@ -650,6 +651,23 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 	
+	private static class ClearCookies extends AbstractCommand {
+
+		ClearCookies(int index, String name, String... args) {
+			super(index, name, args, VALUE, VALUE, VALUE);
+		}
+
+		@Override
+		protected Result executeImpl(Context context, String... curArgs) {
+			try {
+				context.getWrappedDriver().manage().deleteAllCookies();
+			} catch (Exception e) {
+				return new Failure("Something went wrong while closing the webdriver! " + e.getMessage());
+			}
+									
+			return new Success("ok");
+		}
+	}
 	
 	public ICommand newCommand(int index, String name, String... args) {
 		LoggerUtils.quote("Called newCommand for " + name);
@@ -688,6 +706,9 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 		if (name.contentEquals("close")) {
 			return new Close(index, name, args);
+		}
+		if (name.contentEquals("clearCookies")) {
+			return new ClearCookies(index, name, args);
 		}
 
 		return null;
