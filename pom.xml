@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.vebqa</groupId>
 	<artifactId>vebtal-selenium</artifactId>
-	<version>0.9.4</version>
+	<version>0.9.5</version>
 
 	<name>Test Adaption Layer to access webpages via webdriver.</name>
 	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
