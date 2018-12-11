@@ -22,8 +22,10 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,7 @@ import jp.vmi.selenium.selenese.result.Failure;
 import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.selenese.result.Success;
 import jp.vmi.selenium.selenese.utils.LoggerUtils;
+import net.bytebuddy.implementation.bind.annotation.Super;
 
 /**
  * VEB spezifische Erweiterungen fuer den Selenese Runner.
@@ -592,6 +595,14 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
+	/**
+	 * 
+	 * Implement keyword to resize browser window at runtime.
+	 * 
+	 * @author doerges
+	 * 
+	 *
+	 */
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
@@ -626,6 +637,12 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
+	/**
+	 * Close an active brwoser instance and quit the (proxy) driver.
+	 * 
+	 * @author doerges
+	 *
+	 */
 	private static class Close extends AbstractCommand {
 
 		Close(int index, String name, String... args) {
@@ -651,6 +668,34 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 	
+	/**
+	 * Alternate keyword to realize an enter event without using javascript function. 
+	 * Used to automate VAADIN gui.
+	 * 
+	 * @author doerges
+	 *
+	 */
+	private static class PressEnter extends AbstractCommand {
+		
+		PressEnter(int index, String name, String... args) {
+			super(index, name, args, VALUE, VALUE, VALUE);
+		}
+		
+		protected Result executeImpl(Context context, String... curArgs) {
+			String locator = curArgs[0];
+			WebDriver driver = context.getWrappedDriver();
+			WebElement element = context.getElementFinder().findElement(driver, locator);
+			element.sendKeys(Keys.ENTER);
+			return new Success("ok");
+		}
+	}
+	
+	/**
+	 * Beta feature: keyword to realize deletion of cookies during test.
+	 * 
+	 * @author doerges
+	 *
+	 */
 	private static class ClearCookies extends AbstractCommand {
 
 		ClearCookies(int index, String name, String... args) {
@@ -669,6 +714,13 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 	
+	/**
+	 * Load new commands at runtime.
+	 * 
+	 * Return null if command was not found.
+	 * 
+	 * @author doerges
+	 */
 	public ICommand newCommand(int index, String name, String... args) {
 		LoggerUtils.quote("Called newCommand for " + name);
 		if (name.contentEquals("loadUserCredentials")) {
@@ -709,6 +761,9 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 		if (name.contentEquals("clearCookies")) {
 			return new ClearCookies(index, name, args);
+		}
+		if (name.contentEquals("pressEnter")) {
+			return new PressEnter(index, name, args);
 		}
 
 		return null;
