@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,8 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 		@Override
 		protected Result executeImpl(Context context, String... curArgs) {
 
+			boolean isFrameTest = false;
+			
 			// get gspec file if specidfied
 			String tGSpec = null;
 			if (curArgs[0] != null) {
@@ -79,6 +82,33 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 			String tGspecValue = null;
 			if (curArgs[1] != null) {
 				tGspecValue = curArgs[1];
+			}
+			
+			// POC: iframes (chain) support (by name only)
+			if (tGSpec.startsWith("iframes=")) {
+				tGSpec = tGSpec.replaceAll("iframes=", "");
+				String allFrameNames[] = tGSpec.split(",");
+				context.getWrappedDriver().switchTo().defaultContent();
+				for (String aFrameName : allFrameNames) {
+					context.getWrappedDriver().switchTo().frame(context.getWrappedDriver().findElement(By.name(aFrameName)));
+					logger.info("Switched to frame {}", aFrameName);
+					isFrameTest = true;
+				}
+				
+				// set tGspecValue to null as its not used again
+				tGSpec=null;
+			}
+			
+			// POC: iframe support
+			if ((tGSpec != null) &&  (tGSpec.startsWith("iframe="))) {
+				tGSpec = tGSpec.replaceAll("iframe=", "");
+				context.getWrappedDriver().switchTo().defaultContent();
+				context.getWrappedDriver().switchTo().frame(context.getWrappedDriver().findElement(By.xpath(tGSpec)));
+				logger.info("Switched to frame {}", tGSpec);
+				isFrameTest = true;
+				
+				// set tGspecValue to null as its not used again
+				tGSpec=null;
 			}
 
 			PageSpec actualPageSpec = new PageSpec();
@@ -120,6 +150,12 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 				logger.error("Error reading file: {}", tGSpec, e);
 			}
 
+			// back to default!
+			if (isFrameTest) {
+				context.getWrappedDriver().switchTo().defaultContent();
+				logger.info("Switched back to default content.");
+			}
+			
 			if (layoutReport != null && layoutReport.errors() > 0) {
 				int errorCount = 0;
 				StringBuilder resultMessage = new StringBuilder();
