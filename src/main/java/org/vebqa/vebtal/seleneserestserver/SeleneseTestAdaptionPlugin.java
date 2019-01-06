@@ -22,7 +22,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-@SuppressWarnings("restriction")
 public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
 	private static final Logger logger = LoggerFactory.getLogger(SeleneseTestAdaptionPlugin.class);

@@ -291,7 +291,7 @@ public class FileDownloader {
 	// trusting all certificate
 	@SuppressWarnings("restriction")
 	public void doTrustToCertificates() throws Exception {
-		Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+		// Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
 			public X509Certificate[] getAcceptedIssuers() {
 				return null;
