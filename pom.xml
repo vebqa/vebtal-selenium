@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.github.vebqa</groupId>
 		<artifactId>vebtal-parent</artifactId>
-		<version>0.9.5</version>
+		<version>0.9.6</version>
 	</parent>
 
 	<artifactId>vebtal-selenium</artifactId>
-	<version>0.9.10</version>
+	<version>0.9.11</version>
 
 	<name>Test Adaption Layer to access webpages via webdriver.</name>
 	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
-			<version>0.9.8</version>
+			<version>0.9.9</version>
 		</dependency>
 
 		<dependency>
@@ -97,12 +97,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
+			<version>${version.slf4j}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.25</version>
+			<version>${version.slf4j}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

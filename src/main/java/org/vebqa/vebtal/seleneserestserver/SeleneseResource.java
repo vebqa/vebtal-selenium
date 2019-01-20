@@ -116,6 +116,17 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		seleneseContext.getCommandFactory().registerCommandFactory(factory);
 		logger.info("Registered command factory: {}", factory);
 
+		factoryName = "org.vebqa.vebtal.selenese.command.ZAPSeleneseExtensions";
+		try {
+			Class<?> factoryClass = Class.forName(factoryName);
+			factory = (ICommandFactory) factoryClass.newInstance();
+		} catch (Exception e) {
+			logger.error("Error loading user defined command factory: " + factoryName, e);
+			throw new IllegalArgumentException("invalid user defined command factory: " + factoryName);
+		}
+		seleneseContext.getCommandFactory().registerCommandFactory(factory);
+		logger.info("Registered command factory: {}", factory);
+		
 		TestCase tCase = new TestCase();
 		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand(), cmd.getTarget(), cmd.getValue());
 		seleneseContext.setCurrentTestCase(tCase);
