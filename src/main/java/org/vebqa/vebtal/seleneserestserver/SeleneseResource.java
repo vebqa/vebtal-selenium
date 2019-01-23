@@ -2,6 +2,7 @@ package org.vebqa.vebtal.seleneserestserver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -82,23 +83,13 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 
 			if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.CHROME);
+				driverOptions.set(DriverOption.CHROME_EXPERIMENTAL_OPTIONS, GuiManager.getinstance().getConfig().getProperty("browser.options.json"));
 			} else if ("firefox".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.FIREFOX);
 			} else if ("iexplorer".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.IE);
 			}
 			manager.setDriverOptions(driverOptions);
-		}
-		
-		if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
-			Map<String, Object> chromePrefs = new HashMap<>();
-			chromePrefs.put("profile.default_content_settings.popups", false);
-			chromePrefs.put("download.default_directory", GuiManager.getinstance().getConfig().getProperty("pdf.download.path"));
-			chromePrefs.put("plugins.always_open_pdf_externally", false);
-			chromePrefs.put("download.prompt_for_download", false);	
-            ChromeOptions options = new ChromeOptions();
-            options.setExperimentalOption("prefs", chromePrefs);
-            manager.getDriverOptions().getCapabilities().setCapability(ChromeOptions.CAPABILITY, options);
 		}
 		
 		if (cmd.getCommand().contains("open")) {
@@ -145,6 +136,12 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		}
 		seleneseContext.getCommandFactory().registerCommandFactory(factory);
 		logger.info("Registered command factory: {}", factory);
+		
+		Set<String> allCapsNames = manager.getDriverOptions().getCapabilities().getCapabilityNames();
+		logger.info("Count defined capabilities: " + allCapsNames.size());
+		for (String name : allCapsNames) {
+			logger.info("Capability: " + name);
+		}
 		
 		TestCase tCase = new TestCase();
 		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand(), cmd.getTarget(), cmd.getValue());
