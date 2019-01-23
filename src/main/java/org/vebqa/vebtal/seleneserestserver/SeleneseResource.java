@@ -1,5 +1,12 @@
 package org.vebqa.vebtal.seleneserestserver;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionResource;
@@ -15,6 +22,7 @@ import jp.vmi.selenium.selenese.command.ICommandFactory;
 import jp.vmi.selenium.selenese.config.DefaultConfig;
 import jp.vmi.selenium.selenese.config.IConfig;
 import jp.vmi.selenium.selenese.result.Result;
+import jp.vmi.selenium.webdriver.ChromeDriverFactory;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.DriverOptions.DriverOption;
 import jp.vmi.selenium.webdriver.WebDriverManager;
@@ -81,7 +89,18 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			}
 			manager.setDriverOptions(driverOptions);
 		}
-
+		
+		if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
+			Map<String, Object> chromePrefs = new HashMap<>();
+			chromePrefs.put("profile.default_content_settings.popups", false);
+			chromePrefs.put("download.default_directory", GuiManager.getinstance().getConfig().getProperty("pdf.download.path"));
+			chromePrefs.put("plugins.always_open_pdf_externally", false);
+			chromePrefs.put("download.prompt_for_download", false);	
+            ChromeOptions options = new ChromeOptions();
+            options.setExperimentalOption("prefs", chromePrefs);
+            manager.getDriverOptions().getCapabilities().setCapability(ChromeOptions.CAPABILITY, options);
+		}
+		
 		if (cmd.getCommand().contains("open")) {
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
