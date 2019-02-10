@@ -29,6 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.GuiManager;
+import org.vebqa.vebtal.annotations.Keyword;
 import org.vebqa.vebtal.selenese.filedownloader.FileDownloader;
 import org.vebqa.vebtal.selenese.filedownloader.RequestMethod;
 import org.vebqa.vebtal.selenese.filedownloader.URLStatus;
@@ -77,6 +78,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		 * @param index
 		 * @param name
 		 * @param args
+		 * @deprecated
 		 */
 		public LoadVariables(int index, String name, String... args) {
 			super(index, name, args, VALUE, VALUE);
@@ -144,6 +146,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * 
 	 * @author doerges
 	 *
+	 *@deprecated
 	 */
 	private static class SaveVariables extends AbstractCommand {
 
@@ -221,6 +224,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "downloadFileFromUrl", hintTarget = "<URL>", hintValue = "<path/to/file>")
 	private static class DownloadFileFromUrl extends AbstractCommand {
 
 		public DownloadFileFromUrl(int index, String name, String... args) {

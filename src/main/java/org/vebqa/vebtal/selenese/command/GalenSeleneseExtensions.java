@@ -13,6 +13,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vebqa.vebtal.annotations.Keyword;
+import org.vebqa.vebtal.seleneserestserver.SeleneseTestAdaptionPlugin;
 
 import com.galenframework.api.Galen;
 import com.galenframework.browser.SeleniumBrowser;
@@ -55,6 +57,7 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "checkLayout", hintTarget = "<spec file>", hintValue = "<spec text>")
 	private static class CheckLayout extends AbstractCommand {
 
 		private static final List<String> NO_TAGS = emptyList();
@@ -174,6 +177,7 @@ public class GalenSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "resize", hintTarget = "width=;height=")
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
