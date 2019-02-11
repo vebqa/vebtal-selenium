@@ -16,6 +16,7 @@ import org.vebqa.vebtal.TestAdaptionType;
 import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.CommandResult;
 import org.vebqa.vebtal.model.CommandType;
+import org.vebqa.vebtal.selenese.command.SeleneseCommands;
 import org.vebqa.vebtal.seleneserestserver.util.DriverManager;
 import org.vebqa.vebtal.sut.SutStatus;
 
@@ -137,6 +138,12 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		List<KeywordEntry> allModuleKeywords = KeywordFinder.getinstance().getKeywordsByModule(SeleneseTestAdaptionPlugin.ID);
 		TreeSet<String> sortedKeywords = new TreeSet<>();
 		for (KeywordEntry aKeyword : allModuleKeywords) {
+			sortedKeywords.add(aKeyword.getCommand());
+		}
+		
+		SeleneseCommands seleneseCmds = new SeleneseCommands();
+		List<KeywordEntry> allSeleneseCmds = seleneseCmds.getKeywords();
+		for (KeywordEntry aKeyword : allSeleneseCmds) {
 			sortedKeywords.add(aKeyword.getCommand());
 		}
 		
