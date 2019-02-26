@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -46,14 +47,16 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		} else if (cmd.getCommand().startsWith("store")) {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
 		} else if (cmd.getCommand().startsWith("take")) {
-				SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
+			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACCESSOR);
 		} else {
 			SeleneseTestAdaptionPlugin.addCommandToList(cmd, CommandType.ACTION);
 		}
 
 		// Default Config laden
 		// @ToDo: RemoteDriver durchschleifen
-		IConfig config = new DefaultConfig();
+		IConfig config = new DefaultConfig("--alerts-policy", "accept");
+
+		System.out.println("alert policy: " + config.getAlertsPolicy());
 		DriverOptions driverOptions = new DriverOptions(config);
 
 		String tSelectedProxy = SeleneseTestAdaptionPlugin.getSelectedProxy();
@@ -66,7 +69,8 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			String tZapHost = GuiManager.getinstance().getConfig().getString("zap.host");
 			String tZapPort = GuiManager.getinstance().getConfig().getString("zap.port");
 			driverOptions.set(DriverOption.PROXY, tZapHost + ":" + tZapPort);
-			// ClientApi api = new ClientApi(tZapHost, Integer.parseInt(tZapPort), null, false);
+			// ClientApi api = new ClientApi(tZapHost, Integer.parseInt(tZapPort), null,
+			// false);
 			logger.info("Proxy settings for ZAP inserted to driver options.");
 			break;
 		default:
@@ -83,7 +87,8 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 
 			if ("chrome".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.CHROME);
-				driverOptions.set(DriverOption.CHROME_EXPERIMENTAL_OPTIONS, GuiManager.getinstance().getConfig().getProperty("browser.options.json"));
+				driverOptions.set(DriverOption.CHROME_EXPERIMENTAL_OPTIONS,
+						GuiManager.getinstance().getConfig().getProperty("browser.options.json"));
 			} else if ("firefox".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
 				manager.setWebDriverFactory(WebDriverManager.FIREFOX);
 			} else if ("iexplorer".equalsIgnoreCase(SeleneseTestAdaptionPlugin.getSelectedDriver())) {
@@ -91,7 +96,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			}
 			manager.setDriverOptions(driverOptions);
 		}
-		
+
 		if (cmd.getCommand().contains("open")) {
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
@@ -136,19 +141,24 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		}
 		seleneseContext.getCommandFactory().registerCommandFactory(factory);
 		logger.info("Registered command factory: {}", factory);
-		
+
 		Set<String> allCapsNames = manager.getDriverOptions().getCapabilities().getCapabilityNames();
 		logger.info("Count defined capabilities: " + allCapsNames.size());
 		for (String name : allCapsNames) {
 			logger.info("Capability: " + name);
 		}
-		
+
 		TestCase tCase = new TestCase();
 		tCase.addCommand(seleneseContext.getCommandFactory(), cmd.getCommand(), cmd.getTarget(), cmd.getValue());
 		seleneseContext.setCurrentTestCase(tCase);
 
+		Result result = null;
 		setStart();
-		Result result = tCase.execute(null, seleneseContext);
+		try {
+			result = tCase.execute(null, seleneseContext);
+		} catch (UnhandledAlertException e) {
+			logger.error("I am struggling of unhandled alert exception!", e);
+		}
 		setFinished();
 
 		Response tResponse = new Response();
