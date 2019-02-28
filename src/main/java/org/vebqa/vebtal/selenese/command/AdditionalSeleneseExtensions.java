@@ -446,6 +446,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "checkUrl", hintTarget = "<URL>", hintValue = "HTTP Status code>")
 	private static class CheckUrl extends AbstractCommand {
 
 		public CheckUrl(int index, String name, String... args) {
@@ -573,6 +574,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		}
 	}
 
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "takeScreenshot", hintTarget = "<path/to/file.png>")
 	private static class TakeScreenshot extends AbstractCommand {
 
 		TakeScreenshot(int index, String name, String... args) {
@@ -605,6 +607,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * 
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "resizeWindow", hintTarget = "width=;height=")
 	private static class ResizeWindow extends AbstractCommand {
 
 		ResizeWindow(int index, String name, String... args) {
@@ -645,6 +648,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "close")		
 	private static class Close extends AbstractCommand {
 
 		Close(int index, String name, String... args) {
@@ -677,6 +681,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "pressEnter")	
 	private static class PressEnter extends AbstractCommand {
 		
 		PressEnter(int index, String name, String... args) {
@@ -698,6 +703,7 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	 * @author doerges
 	 *
 	 */
+	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "clearCookies")	
 	private static class ClearCookies extends AbstractCommand {
 
 		ClearCookies(int index, String name, String... args) {

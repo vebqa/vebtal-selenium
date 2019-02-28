@@ -1,14 +1,8 @@
 package org.vebqa.vebtal.seleneserestserver;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionResource;
@@ -24,7 +18,6 @@ import jp.vmi.selenium.selenese.command.ICommandFactory;
 import jp.vmi.selenium.selenese.config.DefaultConfig;
 import jp.vmi.selenium.selenese.config.IConfig;
 import jp.vmi.selenium.selenese.result.Result;
-import jp.vmi.selenium.webdriver.ChromeDriverFactory;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.DriverOptions.DriverOption;
 import jp.vmi.selenium.webdriver.WebDriverManager;
