@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.github.vebqa</groupId>
 		<artifactId>vebtal-parent</artifactId>
-		<version>0.9.9</version>
+		<version>0.9.10</version>
 	</parent>
 
 	<artifactId>vebtal-selenium</artifactId>
-	<version>0.9.12</version>
+	<version>0.9.13</version>
 
 	<name>Test Adaption Layer to access webpages via webdriver.</name>
 	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
-			<version>0.9.12</version>
+			<version>0.9.13</version>
 		</dependency>
 
 		<dependency>
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>com.galenframework</groupId>
 			<artifactId>galen-java-support</artifactId>
-			<version>2.4.3</version>
+			<version>2.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.zaproxy</groupId>
