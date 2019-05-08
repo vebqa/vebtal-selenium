@@ -21,6 +21,7 @@ import jp.vmi.selenium.selenese.CollectionMap;
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.Eval;
 import jp.vmi.selenium.selenese.FlowControlState;
+import jp.vmi.selenium.selenese.MaxTimeActiveTimer;
 import jp.vmi.selenium.selenese.MaxTimeTimer;
 import jp.vmi.selenium.selenese.ModifierKeyState;
 import jp.vmi.selenium.selenese.SubCommandMapProvider;
@@ -87,7 +88,7 @@ public class SeleneseContext implements Context, HighlightHandler {
     // private final JUnitResult jUnitResult = new JUnitResult();
     // private final HtmlResult htmlResult = new HtmlResult();
 
-    private MaxTimeTimer maxTimeTimer = new MaxTimeTimer() {
+    public MaxTimeTimer maxTimeTimer = new MaxTimeTimer() {
     };	
 	
     private final AlertActionListener alertActionListener = new AlertActionListener() {
@@ -483,6 +484,5 @@ public class SeleneseContext implements Context, HighlightHandler {
             HighlightStyleBackup backup = styleBackups.pop();
             backup.restore(driver, elementFinder);
         }
-    }
-    
+    }  
 }

@@ -49,7 +49,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		// @ToDo: RemoteDriver durchschleifen
 		IConfig config = new DefaultConfig("--alerts-policy", "accept");
 
-		System.out.println("alert policy: " + config.getAlertsPolicy());
+		logger.debug("alert policy: " + config.getAlertsPolicy());
 		DriverOptions driverOptions = new DriverOptions(config);
 
 		String tSelectedProxy = SeleneseTestAdaptionPlugin.getSelectedProxy();
@@ -146,6 +146,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		seleneseContext.setCurrentTestCase(tCase);
 
 		Result result = null;
+		seleneseContext.maxTimeTimer.start();
 		setStart();
 		try {
 			result = tCase.execute(null, seleneseContext);
@@ -153,6 +154,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			logger.error("I am struggling of unhandled alert exception!", e);
 		}
 		setFinished();
+		seleneseContext.maxTimeTimer.stop();
 
 		Response tResponse = new Response();
 		tResponse.setCode(String.valueOf(result.getLevel().value));
