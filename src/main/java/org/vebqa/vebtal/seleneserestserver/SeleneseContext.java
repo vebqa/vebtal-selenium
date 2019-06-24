@@ -21,7 +21,6 @@ import jp.vmi.selenium.selenese.CollectionMap;
 import jp.vmi.selenium.selenese.Context;
 import jp.vmi.selenium.selenese.Eval;
 import jp.vmi.selenium.selenese.FlowControlState;
-import jp.vmi.selenium.selenese.MaxTimeActiveTimer;
 import jp.vmi.selenium.selenese.MaxTimeTimer;
 import jp.vmi.selenium.selenese.ModifierKeyState;
 import jp.vmi.selenium.selenese.SubCommandMapProvider;
@@ -146,6 +145,9 @@ public class SeleneseContext implements Context, HighlightHandler {
      */
     public void setDriver(WebDriver driver) {
         this.driver = driver;
+        if (this.isW3cAction == null) {
+        	this.isW3cAction = MouseUtils.isW3cAction(driver);
+        }
         this.initialWindowHandle = driver.getWindowHandle();
         setDriverTimeout();
     }
@@ -208,7 +210,7 @@ public class SeleneseContext implements Context, HighlightHandler {
 
     @Override
     public boolean isW3cAction() {
-        return isW3cAction != null ? isW3cAction : MouseUtils.isW3cAction(getBrowserName());
+    	return isW3cAction != null ? isW3cAction : false;
     }
 
     /**

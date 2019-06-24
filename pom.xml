@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>jp.vmi</groupId>
 			<artifactId>selenese-runner-java</artifactId>
-			<version>3.23.0</version>
+			<version>3.24.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
