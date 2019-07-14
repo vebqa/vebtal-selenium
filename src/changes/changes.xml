@@ -1,0 +1,18 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>VEBTAL Selenese - Test Adaption Layer</title>
+		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
+	</properties>
+	<body>
+		<release version="1.0.1" date="2019-07.14" description="maintenance">
+			<action dev="kdoerges" type="update">
+				update vebtal-parent 1.0.1
+			</action>
+			<action dev="kdoerges" type="update">
+				update zap client 1.7.0
+			</action>							
+		</release>
+	</body>
+</document>
