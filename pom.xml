@@ -5,11 +5,11 @@
 	<parent>
 		<groupId>com.github.vebqa</groupId>
 		<artifactId>vebtal-parent</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 	</parent>
 
 	<artifactId>vebtal-selenium</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 
 	<name>Test Adaption Layer to access webpages via webdriver.</name>
 	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
@@ -53,13 +53,13 @@
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>jp.vmi</groupId>
 			<artifactId>selenese-runner-java</artifactId>
-			<version>3.24.1</version>
+			<version>3.27.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
