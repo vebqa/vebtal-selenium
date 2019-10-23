@@ -55,6 +55,7 @@ public class SeleneseContext implements Context, HighlightHandler {
     // private String screenshotAllDir = null;
     // private String screenshotOnFailDir = null;
     // private boolean isIgnoredScreenshotCommand = false;
+    
     private boolean isHighlight = false;
     private boolean isInteractive = false;
     private Boolean isW3cAction = null;    
@@ -63,6 +64,7 @@ public class SeleneseContext implements Context, HighlightHandler {
     private int maxRetries = 0;
     private long initialSpeed = 0; /* ms */
     private long speed = 0; /* ms */
+    
     // private int screenshotScrollTimeout = 100; /* ms */	
 	
     private final Eval eval;

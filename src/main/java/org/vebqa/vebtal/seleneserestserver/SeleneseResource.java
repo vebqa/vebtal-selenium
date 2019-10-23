@@ -90,6 +90,14 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			manager.setDriverOptions(driverOptions);
 		}
 
+		// activate highlight
+		boolean tSelectedHighlight = SeleneseTestAdaptionPlugin.getIsSelectedHighlight();
+		if (tSelectedHighlight) {
+			seleneseContext.setHighlight(true);
+		} else {
+			seleneseContext.setHighlight(false);
+		}
+		
 		if (cmd.getCommand().contains("open")) {
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
