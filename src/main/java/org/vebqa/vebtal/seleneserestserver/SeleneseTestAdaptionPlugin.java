@@ -56,18 +56,25 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	private static final String DEFAULTHIGHLIGHT = "Highlight: None";
 	private static final String ACTIVATEHIGHLIGHT = "Highlight: Yes";
 
+	private static final String DEFAULTSCREENSHOT = "Screenshot: None";
+	private static final String SCREENSHOTALL = "Screenshot: All";
+	private static final String SCREENSHOTONFAIL = "Screenshot: On fail";
+
 	public SeleneseTestAdaptionPlugin() {
 		super(TestAdaptionType.ADAPTER);
 	}
 
-	/** Browser selection **/
+	/** Browser selection */
 	private static final ComboBox<String> browserComboBox = new ComboBox<>();
 
-	/** Proxy selection **/
+	/** Proxy selection */
 	private static final ComboBox<String> proxyComboBox = new ComboBox<>();
 
-	/** Highlight selection **/
+	/** Highlight selection */
 	private static final ComboBox<String> highlightComboBox = new ComboBox<>();
+
+	/** Screenshot selection */
+	private static final ComboBox<String> modeScreenshot = new ComboBox<>();
 
 	private static final TableView<CommandResult> commandList = new TableView<>();
 	private static final ObservableList<CommandResult> clData = FXCollections.observableArrayList();
@@ -132,7 +139,7 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 
 		proxyComboBox.getSelectionModel().select(DEFAULTPROXY);
 
-		// Select highlight mode & set starupmode from config
+		// Select highlight mode & set startupmode from config
 		highlightComboBox.getItems().add(DEFAULTHIGHLIGHT);
 		highlightComboBox.getItems().add(ACTIVATEHIGHLIGHT);
 
@@ -141,6 +148,27 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 			highlightComboBox.getSelectionModel().select(ACTIVATEHIGHLIGHT);
 		} else {
 			highlightComboBox.getSelectionModel().select(DEFAULTHIGHLIGHT);
+		}
+
+		// Select screenshot mode & set startup mode from config
+		modeScreenshot.getItems().add(DEFAULTSCREENSHOT);
+		modeScreenshot.getItems().add(SCREENSHOTALL);
+		modeScreenshot.getItems().add(SCREENSHOTONFAIL);
+
+		String tScreenshotMode = GuiManager.getinstance().getConfig().getString("browser.screenshot");
+		tScreenshotMode = tScreenshotMode.toLowerCase();
+		switch (tScreenshotMode) {
+		case "none":
+			modeScreenshot.getSelectionModel().select(DEFAULTSCREENSHOT);
+			break;
+		case "all":
+			modeScreenshot.getSelectionModel().select(SCREENSHOTALL);
+			break;
+		case "onfail":
+			modeScreenshot.getSelectionModel().select(SCREENSHOTONFAIL);
+			break;
+		default:
+			modeScreenshot.getSelectionModel().select(DEFAULTSCREENSHOT);
 		}
 
 		// Add
@@ -199,7 +227,7 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		BorderPane pane = (BorderPane) seleneseTab.getContent();
 		// Top bauen
 		HBox hbox = new HBox();
-		hbox.getChildren().addAll(browserComboBox, proxyComboBox, highlightComboBox);
+		hbox.getChildren().addAll(browserComboBox, proxyComboBox, highlightComboBox, modeScreenshot);
 
 		VBox stack = new VBox();
 		stack.getChildren().addAll(hbox, hcmdbox);
@@ -228,16 +256,39 @@ public class SeleneseTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 		return true;
 	}
 
+	public static boolean getIsNoScreenshot() {
+		if (modeScreenshot.getValue() == DEFAULTSCREENSHOT) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean getIsScreenshotAll() {
+		if (modeScreenshot.getValue() == SCREENSHOTALL) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean getIsScreenshotOnFail() {
+		if (modeScreenshot.getValue() == SCREENSHOTONFAIL) {
+			return true;
+		}
+		return false;
+	}
+	
 	public static void disableComboBox() {
 		browserComboBox.setDisable(true);
 		proxyComboBox.setDisable(true);
 		highlightComboBox.setDisable(true);
+		modeScreenshot.setDisable(true);
 	}
 
 	public static void enableCombobox() {
 		browserComboBox.setDisable(false);
 		proxyComboBox.setDisable(false);
 		highlightComboBox.setDisable(false);
+		modeScreenshot.setDisable(false);
 	}
 
 	public static void addCommandToList(Command aCmd, CommandType aType) {

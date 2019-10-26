@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>vebtal-selenium</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.2.1</version>
 
 	<name>Test Adaption Layer to access webpages via webdriver.</name>
 	<description>Provides access for testing webpages with junit / assertj or keyword driven approach</description>
@@ -45,7 +45,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<modulename>vebtalselenium</modulename>
+		<modulename>opental.selenium</modulename>
 	</properties>
 
 	<dependencies>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>jp.vmi</groupId>
 			<artifactId>selenese-runner-java</artifactId>
-			<version>3.27.0</version>
+			<version>3.27.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>

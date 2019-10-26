@@ -6,6 +6,14 @@
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
+		<release version="1.0.2.1" date="2019-10.26" description="add highlight">
+			<action dev="kdoerges" type="add">
+				add highlight to manager
+			</action>
+			<action dev="kdoerges" type="update">
+				update selenese-java-runner 3.27.1
+			</action>							
+		</release>
 		<release version="1.0.2" date="2019-10.08" description="maintenance">
 			<action dev="kdoerges" type="update">
 				update vebtal-parent 1.0.2

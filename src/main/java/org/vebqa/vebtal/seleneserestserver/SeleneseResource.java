@@ -3,6 +3,7 @@ package org.vebqa.vebtal.seleneserestserver;
 import java.util.Set;
 
 import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.AbstractTestAdaptionResource;
@@ -98,6 +99,24 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			seleneseContext.setHighlight(false);
 		}
 		
+		boolean tCreateNoScreenshots = SeleneseTestAdaptionPlugin.getIsNoScreenshot();
+		if (tCreateNoScreenshots) {
+		    seleneseContext.setScreenshotAllDir(null);
+		    seleneseContext.setScreenshotOnFailDir(null);
+		} 
+		
+		boolean tCreateScreenshotsAll = SeleneseTestAdaptionPlugin.getIsScreenshotAll();
+		if (tCreateScreenshotsAll){
+			seleneseContext.setScreenshotAllDir(GuiManager.getinstance().getConfig().getString("browser.screenshot.path"));
+			seleneseContext.setScreenshotScrollTimeout(100);
+		}
+		
+		boolean tCreateScreenshotOnFail = SeleneseTestAdaptionPlugin.getIsScreenshotOnFail();
+		if (tCreateScreenshotOnFail) {
+			seleneseContext.setScreenshotOnFailDir(GuiManager.getinstance().getConfig().getString("browser.screenshot.path"));
+			seleneseContext.setScreenshotScrollTimeout(100);
+		}
+		
 		if (cmd.getCommand().contains("open")) {
 			// Disable Auswahl bis zum Restart oder schliessen des Browsers.
 			SeleneseTestAdaptionPlugin.disableComboBox();
@@ -105,7 +124,8 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		}
 
 		// Manager uebergeben an den Context
-		seleneseContext.setDriver(manager.get());
+		// wrap webdriver with eventfiring for taaking screenshots
+		seleneseContext.setDriver(new EventFiringWebDriver(manager.get()));
 		seleneseContext.setWebDriverPreparator(manager);
 
 		// TODO: refactor to dynamic loading
@@ -168,7 +188,7 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 		tResponse.setCode(String.valueOf(result.getLevel().value));
 		String tMessage = "";
 		if (result.isSuccess()) {
-			// Wenn Command ein Store Befehl war das Ziel an Tosca senden
+			// Wenn Command ein Store Befehl war das Ziel zuruecksenden
 			if (cmd.getCommand().startsWith("store")) {
 				tResponse.setStoredKey(cmd.getValue());
 				tResponse.setStoredValue((String) seleneseContext.getVarsMap().get(cmd.getValue()));
