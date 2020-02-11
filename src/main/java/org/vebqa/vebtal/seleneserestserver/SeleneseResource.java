@@ -191,7 +191,13 @@ public class SeleneseResource extends AbstractTestAdaptionResource implements Te
 			// Wenn Command ein Store Befehl war das Ziel zuruecksenden
 			if (cmd.getCommand().startsWith("store")) {
 				tResponse.setStoredKey(cmd.getValue());
-				tResponse.setStoredValue((String) seleneseContext.getVarsMap().get(cmd.getValue()));
+				
+				Object varValue = seleneseContext.getVarsMap().get(cmd.getValue());
+				if (varValue instanceof Integer) {
+					tResponse.setStoredValue(String.valueOf(varValue));
+				} else {
+					tResponse.setStoredValue((String) varValue);
+				}
 			}
 
 			tResponse.setMessage("Successfully processed command: " + cmd.getCommand() + " with target: "

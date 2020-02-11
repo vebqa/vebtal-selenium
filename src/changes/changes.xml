@@ -6,6 +6,17 @@
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
+		<release version="1.0.3.1" date="2020-02.11" description="bugfixing">
+			<action dev="kdoerges" type="update">
+				update parent
+			</action>
+			<action dev="kdoerges" type="update">
+				dependency: selenese-runner-java 3.29.0
+			</action>
+			<action dev="kdoerges" type="update">
+				seleneseResource: fix type cast when storing integer value 
+			</action>
+		</release>
 		<release version="1.0.3" date="2019-12.04" description="maintenance">
 			<action dev="kdoerges" type="add">
 				update parent
