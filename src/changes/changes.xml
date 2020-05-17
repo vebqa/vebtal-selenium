@@ -2,10 +2,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 	<properties>
-		<title>VEBTAL Selenese - Test Adaption Layer</title>
+		<title>OpenTAL Selenese - Test Adaptation Layer</title>
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
+		<release version="1.0.5" date="2020-05.17" description="bugfixing">
+			<action dev="kdoerges" type="update">
+				update parent 1.0.5
+			</action>
+			<action dev="kdoerges" type="update">
+				update selenese-runner-java 3.30.0
+			</action>
+			<action dev="kdoerges" type="fix">
+				remove deprecated keywwords: loadVariables, saveVariables 
+			</action>
+		</release>
 		<release version="1.0.3.1" date="2020-02.11" description="bugfixing">
 			<action dev="kdoerges" type="update">
 				update parent
