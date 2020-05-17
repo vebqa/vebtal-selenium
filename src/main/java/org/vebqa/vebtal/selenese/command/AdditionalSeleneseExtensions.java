@@ -5,7 +5,6 @@ import static jp.vmi.selenium.selenese.command.ArgumentType.VALUE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -20,7 +19,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -28,14 +26,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vebqa.vebtal.GuiManager;
 import org.vebqa.vebtal.annotations.Keyword;
+import org.vebqa.vebtal.selenese.commands.CheckUrl;
+import org.vebqa.vebtal.selenese.commands.ClearCookies;
+import org.vebqa.vebtal.selenese.commands.Close;
+import org.vebqa.vebtal.selenese.commands.ResizeWindow;
 import org.vebqa.vebtal.selenese.filedownloader.FileDownloader;
-import org.vebqa.vebtal.selenese.filedownloader.RequestMethod;
-import org.vebqa.vebtal.selenese.filedownloader.URLStatus;
-import org.vebqa.vebtal.seleneserestserver.SeleneseResource;
 import org.vebqa.vebtal.seleneserestserver.SeleneseTestAdaptionPlugin;
-import org.vebqa.vebtal.sut.SutStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -63,160 +60,6 @@ import jp.vmi.selenium.selenese.utils.LoggerUtils;
 public class AdditionalSeleneseExtensions implements ICommandFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(AdditionalSeleneseExtensions.class);
-
-	/**
-	 * Laedt Variablen aus der Eingangsschnittstelle in den Selenese Variablen-Raum.
-	 * 
-	 * @author doerges
-	 *
-	 */
-	private static class LoadVariables extends AbstractCommand {
-
-		/**
-		 * Constructor
-		 * 
-		 * @param index
-		 * @param name
-		 * @param args
-		 * @deprecated
-		 */
-		public LoadVariables(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE);
-		}
-
-		/**
-		 * Implementierung des "loadVariables" commands
-		 */
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			LoggerUtils.quote("Called executeImpl with Argument lengt: " + curArgs.length);
-			String tVarsFile = curArgs[0];
-
-			// Actual folder
-			String thisScript = context.getCurrentTestCase().getFilename();
-			String thisFolder = thisScript.substring(0, thisScript.lastIndexOf('\\'));
-
-			File varFile = new File(thisFolder + "/" + tVarsFile);
-
-			if (!varFile.exists()) {
-				return new Failure("Variable file does not exists: " + varFile.getAbsolutePath());
-			}
-
-			// load export file
-			Document doc = null;
-			try {
-				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-				doc = dBuilder.parse(varFile);
-				doc.getDocumentElement().normalize();
-
-			} catch (IOException e) {
-				return new Failure("Can not read variable file: " + varFile);
-			} catch (ParserConfigurationException e) {
-				return new Failure("Can not parse variable file: " + varFile + " because: " + e.getMessage());
-			} catch (SAXException e) {
-				return new Failure("Can not parse variable file: " + varFile + " because: " + e.getMessage());
-			}
-			// nach vereinbarung gibt es nur ein erstes Tag "variables"
-			Node nVarNode = doc.getElementsByTagName("variables").item(0);
-
-			NodeList nVarChildren = nVarNode.getChildNodes();
-
-			// transfer values to var system
-			for (int temp = 0; temp < nVarChildren.getLength(); temp++) {
-				Node nNode = nVarChildren.item(temp);
-				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-					Element eElement = (Element) nNode;
-					String tNodeName = eElement.getNodeName();
-					String tNodeValue = eElement.getTextContent();
-					// Variable uebertragen wenn der Key noch nicht vorhanden
-					// ist.
-					context.getVarsMap().putIfAbsent(tNodeName, tNodeValue);
-				}
-			}
-
-			return new Success("Variables successfully loaded from file and transfered to variable system");
-		}
-
-	}
-
-	/**
-	 * Command "saveVariables", erlaubt das Speichern der angelegten Variablen in
-	 * einer XML Datei fuer die Weiterverarbeitung.
-	 * 
-	 * @author doerges
-	 *
-	 *@deprecated
-	 */
-	private static class SaveVariables extends AbstractCommand {
-
-		public SaveVariables(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			LoggerUtils.quote("Called executeImpl with Argument length: " + curArgs.length);
-
-			String tVarsFile = curArgs[0];
-			File varFile = new File(tVarsFile);
-
-			VarsMap tVarsMap = context.getVarsMap();
-			if (tVarsMap.containsKey("SeleniumTemp")) {
-				String fileName = varFile.getName();
-				String seleniumTemp = (String) tVarsMap.get("SeleniumTemp");
-				varFile = new File(seleniumTemp + File.separator + fileName);
-			}
-			Set<Entry<String, Object>> tEntries = tVarsMap.entrySet();
-
-			int countElements = 0;
-
-			try {
-
-				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-				// root elements
-				Document doc = docBuilder.newDocument();
-				Element rootElement = doc.createElement("exchange");
-				doc.appendChild(rootElement);
-
-				for (Entry<String, Object> tEntry : tEntries) {
-					// Alles ausser KEY exportieren, das sind SELENESE interne
-					// Variablen die uns nicht weiter interessieren.
-					if (!tEntry.getKey().startsWith("KEY_") && !tEntry.getKey().startsWith("space")
-							&& !tEntry.getKey().startsWith("nbsp")) {
-						// elements
-						Element element = doc.createElement(tEntry.getKey());
-						// Loesung finden fuer die Konvertierung in einen String
-						Object tVal = tEntry.getValue();
-						if (tVal instanceof Boolean) {
-							element.appendChild(doc.createTextNode((new Boolean((Boolean) tVal)).toString()));
-						} else if (tVal instanceof String) {
-							element.appendChild(doc.createTextNode((String) tVal));
-						}
-						rootElement.appendChild(element);
-						countElements++;
-					}
-				}
-
-				// write the content into xml file
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(varFile);
-
-				transformer.transform(source, result);
-
-			} catch (ParserConfigurationException pce) {
-				return new Failure(pce);
-			} catch (TransformerException tfe) {
-				return new Failure(tfe);
-			}
-			return new Success(countElements + " variables successfully written to file: " + varFile.getAbsolutePath());
-		}
-
-	}
 
 	/**
 	 * Command "downloadFileFromUrl" - lade Daten aus einem Strom herunter.
@@ -438,85 +281,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	}
 
 	/**
-	 * Command "checkUrl" - Generische Implementierung fuer alle StatusCodes. - 200:
-	 * OK - 301: Moved permanently - 404: Not found
-	 * 
-	 * Expected Status Codes koennen als Liste angegeben werden, z.B.: 200,503
-	 * 
-	 * @author doerges
-	 *
-	 */
-	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "checkUrl", hintTarget = "<URL>", hintValue = "HTTP Status code>")
-	private static class CheckUrl extends AbstractCommand {
-
-		public CheckUrl(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			String tUrl = curArgs[0].trim();
-			String tStatusCode = curArgs[1].trim();
-
-			// Statuscodes aufloesen
-			String[] allStatusCodes = tStatusCode.split(",");
-			List<Integer> codes = new ArrayList<Integer>();
-			for (String aCode : allStatusCodes) {
-				Integer tCode = Integer.parseInt(aCode.trim());
-				codes.add(tCode);
-			}
-
-			String url = null;
-			// entscheiden ob link oder id
-			// fallback: link annehmen und ggf. http:// erweitern
-
-			if (tUrl.startsWith("link=")) {
-				tUrl = tUrl.replace("link=", "");
-				url = context.getWrappedDriver().findElement(By.linkText(tUrl)).getAttribute("href");
-			} else if (tUrl.startsWith("id=")) {
-				tUrl = tUrl.replace("id=", "");
-				url = context.getWrappedDriver().findElement(By.id(tUrl)).getAttribute("href");
-			} else if (tUrl.startsWith("xpath=")) {
-				tUrl = tUrl.replace("xpath=", "");
-				url = context.getWrappedDriver().findElement(By.xpath(tUrl)).getAttribute("href");
-			} else if (tUrl.startsWith("http://")) {
-				url = tUrl;
-			} else if (tUrl.startsWith("/")) {
-				// um base erweitern!
-				url = context.getCurrentBaseURL() + tUrl;
-				logger.warn("Erweitert um base: {}", url);
-			} else {
-				// Fallback
-				url = "http://" + tUrl;
-			}
-
-			try {
-				URLStatus urlStatusCheck = new URLStatus(context.getWrappedDriver());
-				urlStatusCheck.setURIToCheck(url);
-				urlStatusCheck.setHTTPRequestMethod(RequestMethod.GET);
-
-				// Pruefen ob der Statuscode in der Liste der erwarteten Codes
-				// ist
-				boolean statusOK = false;
-				for (Integer tExpectedCode : codes) {
-					if (urlStatusCheck.getHTTPStatusCode() == tExpectedCode) {
-						statusOK = true;
-					}
-				}
-				if (!statusOK) {
-					return new Failure("Expected status code is:<" + tStatusCode + "> but i got <"
-							+ urlStatusCheck.getHTTPStatusCode() + ">");
-
-				} else {
-					return new Success("Expected/resolved status code is:<" + urlStatusCheck.getHTTPStatusCode() + ">");
-				}
-			} catch (Exception e) {
-				return new Failure(e);
-			}
-		}
-	}
-
-	/**
 	 * Command "loadUserCredentials" laedt Benutzerkennung und Passwort aus einer JS
 	 * Datei in der Umgebung. Diese JS Datei ist identisch mit der JS Datei welche
 	 * in der Selenium IDE verwendet wird.
@@ -598,81 +362,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 			return new Success("ok");
 		}
 	}
-
-	/**
-	 * 
-	 * Implement keyword to resize browser window at runtime.
-	 * 
-	 * @author doerges
-	 * 
-	 *
-	 */
-	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "resizeWindow", hintTarget = "width=;height=")
-	private static class ResizeWindow extends AbstractCommand {
-
-		ResizeWindow(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			// Dimension
-			// Beispiel: width=800;height=600
-			int width = 800;
-			int height = 600;
-			String target = curArgs[0].trim();
-			String[] someToken = target.split(";");
-
-			for (String aToken : someToken) {
-				// Needs an equal
-				String[] parts = aToken.split("=");
-				switch (parts[0]) {
-				case "width":
-					width = Integer.valueOf(parts[1]);
-					break;
-				case "height":
-					height = Integer.valueOf(parts[1]);
-					break;
-				}
-			}
-			logger.info("Set windows dimension to: width:" + width + " and height:" + height);
-			Dimension dim = new Dimension(width, height);
-			context.getWrappedDriver().manage().window().setSize(dim);
-			return new Success("ok");
-		}
-	}
-
-	/**
-	 * Close an active brwoser instance and quit the (proxy) driver.
-	 * 
-	 * @author doerges
-	 *
-	 */
-	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "close")		
-	private static class Close extends AbstractCommand {
-
-		Close(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			try {
-				
-				// context.getWrappedDriver().close();
-				SeleneseResource.getManager().quitDriver();
-				SeleneseResource.destroyManager();
-			} catch (Exception e) {
-				return new Failure("Something went wrong while closing the webdriver! " + e.getMessage());
-			}
-						
-			// Browser Auswahlbox kann wieder aktiviert werden.
-			SeleneseTestAdaptionPlugin.enableCombobox();
-			GuiManager.getinstance().setTabStatus(SeleneseTestAdaptionPlugin.ID, SutStatus.DISCONNECTED);
-			
-			return new Success("ok");
-		}
-	}
 	
 	/**
 	 * Alternate keyword to realize an enter event without using javascript function. 
@@ -698,31 +387,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 	}
 	
 	/**
-	 * Beta feature: keyword to realize deletion of cookies during test.
-	 * 
-	 * @author doerges
-	 *
-	 */
-	@Keyword(module = SeleneseTestAdaptionPlugin.ID, command = "clearCookies")	
-	private static class ClearCookies extends AbstractCommand {
-
-		ClearCookies(int index, String name, String... args) {
-			super(index, name, args, VALUE, VALUE, VALUE);
-		}
-
-		@Override
-		protected Result executeImpl(Context context, String... curArgs) {
-			try {
-				context.getWrappedDriver().manage().deleteAllCookies();
-			} catch (Exception e) {
-				return new Failure("Something went wrong while closing the webdriver! " + e.getMessage());
-			}
-									
-			return new Success("ok");
-		}
-	}
-	
-	/**
 	 * Load new commands at runtime.
 	 * 
 	 * Return null if command was not found.
@@ -733,12 +397,6 @@ public class AdditionalSeleneseExtensions implements ICommandFactory {
 		LoggerUtils.quote("Called newCommand for " + name);
 		if (name.contentEquals("loadUserCredentials")) {
 			return new LoadUserCredentials(index, name, args);
-		}
-		if (name.contentEquals("saveVariables")) {
-			return new SaveVariables(index, name, args);
-		}
-		if (name.contentEquals("loadVariables")) {
-			return new LoadVariables(index, name, args);
 		}
 		if (name.contentEquals("downloadFileFromUrl")) {
 			return new DownloadFileFromUrl(index, name, args);
